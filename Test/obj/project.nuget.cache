@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AH/zgOjQnKCluRY+cUDN1cUQYYt/2MyX+mRxwlL4cfK/ZLhgO72UanGdgugCvXwo0aIRqchnuhtFxlb0/DZ9aA==",
+  "dgSpecHash": "YdDo6Q5kv0xzRIA9t2MVWHEhbShPe+rBqxrXkGyFODnw2UkueXjPhxX3AdYvstxFLvDfvIAQpK2Ob+khtyayLQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\cbdix\\Desktop\\DataSystem\\Test\\Test.csproj",
+  "projectFilePath": "C:\\Users\\cbdix\\Desktop\\ECS\\Test\\Test.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

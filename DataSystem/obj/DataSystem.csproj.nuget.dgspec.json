@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\cbdix\\Desktop\\DataSystem\\DataSystem\\DataSystem.csproj": {}
+    "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\cbdix\\Desktop\\DataSystem\\DataSystem\\DataSystem.csproj": {
+    "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cbdix\\Desktop\\DataSystem\\DataSystem\\DataSystem.csproj",
+        "projectUniqueName": "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj",
         "projectName": "DataSystem",
-        "projectPath": "C:\\Users\\cbdix\\Desktop\\DataSystem\\DataSystem\\DataSystem.csproj",
+        "projectPath": "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj",
         "packagesPath": "C:\\Users\\cbdix\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cbdix\\Desktop\\DataSystem\\DataSystem\\obj\\",
+        "outputPath": "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\cbdix\\AppData\\Roaming\\NuGet\\NuGet.Config",
