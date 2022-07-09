@@ -28,9 +28,9 @@ namespace CMDR
             return B10InternalSort(max, 0, input, new ulong[input.Length]);
         }
 
-        public static ulong[] B16Sort(uint max, ulong[] input)
+        public static ulong[] Sort(uint max, ulong[] input)
         {
-            return B16InternalSort(max, 0, 0xf, input, new ulong[input.Length]);
+            return InternalSort(max, 0, 0xf, input, new ulong[input.Length]);
         }
 
         #endregion
@@ -86,7 +86,7 @@ namespace CMDR
 
         }
 
-        private static ulong[] B16InternalSort(uint max, int pos, ulong mask, ulong[] input, ulong[] output)
+        private static ulong[] InternalSort(uint max, int pos, ulong mask, ulong[] input, ulong[] output)
         {
             count = _countPool.Rent(16);        
             //count = new uint[16];

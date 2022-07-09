@@ -1,26 +1,32 @@
 using System;
 using System.Collections.Generic;
+using CMDR.DataSystem;
 
 namespace CMDR
 {
     internal class ComponentCollection<T> : IComponentCollection<T> where T : struct, IComponent
     {
-        private Dictionary<uint, T> _components;
+        //private Dictionary<uint, T> _components;
+
+        private T[] _components;
 
         private Dictionary<uint, uint> _idToIndexLookUp;
 
-        private T[] components;
-
         internal ComponentCollection()
         {
-            _components = new Dictionary<uint, T>();
+            _components = new T[Data.StorageScale];
         }
 
         
         #region PUBLIC_METHODS
+
+        public Span<T> GetSpan()
+        {
+            return new Span<T>(_components);
+        }
         public void Add(T component)
         {
-            throw new NotImplementedException();
+            _components[Count] = component;
         }
 
         public void AddRange(T[] components)
@@ -53,6 +59,7 @@ namespace CMDR
 
     internal interface IComponentCollection<T>
     {
+        public Span<T> GetSpan();
         public void Add(T component);
 
         public void AddRange(T[] components);

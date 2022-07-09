@@ -72,6 +72,10 @@ namespace CMDR.DataSystem
         internal static void GenerateComponentStorage()
         {
 
+            Components = new Dictionary<Type, IComponentCollection<IComponent>>();
+
+            Queries = new Dictionary<Query, IComponentCollection<IComponent>>();
+
             Type TComponentCollection = typeof(ComponentCollection<>);
 
             foreach(Type TComponent in _types)

@@ -7,6 +7,9 @@ namespace Test
     {
         static void Main(string[] args)
         {
+            
+
+
             Random R = new Random();
             ulong[] GameObjects = new ulong[50];
             for (int i = 0; i < GameObjects.Length; i++)
