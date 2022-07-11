@@ -4,7 +4,7 @@ namespace CMDR
 {
     public interface IComponent
     {
-        ulong ID { get; internal set; }
+        ID ID { get; internal set; }
     }
 
     public interface IComponent<T> : IComponent { }

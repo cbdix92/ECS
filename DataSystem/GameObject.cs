@@ -9,7 +9,7 @@ namespace CMDR.DataSystem
 
         public readonly Scene Scene;
 
-        public ulong ID { get; internal set; }
+        public ID ID { get; internal set; }
 
         public int ComponentCount { get; internal set; }
 

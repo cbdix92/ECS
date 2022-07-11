@@ -10,7 +10,7 @@ namespace CMDR.DataSystem
     {
         #region  PUBLIC_MEMBERS
         
-        public static readonly byte StorageScale = byte.MaxValue;
+        public static readonly int StorageScale = byte.MaxValue;
 
         public static byte ComponentTotal { get; private set; }
 
@@ -65,9 +65,26 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
+        public static Data()
+        {
+            
+        }
+
         #endregion
 
         #region INTERNAL_METHODS
+
+        internal static int GetMaxIDRange()
+        {
+            int max = 1;
+
+            while(max < _currentGameObjectID)
+            {
+                max <<= 4;
+            }
+
+            return max;
+        }
         
         internal static void GenerateComponentStorage()
         {
@@ -126,6 +143,8 @@ namespace CMDR.DataSystem
         #endregion
 
         #region PRIVATE_METHODS
+
+
 
         #endregion
     }
