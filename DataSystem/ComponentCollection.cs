@@ -109,6 +109,7 @@ namespace CMDR
             // Remove components ID lookup.
             _idToIndexLookUp.Remove(_components[index]);
             
+            // If the Component is at the end of the array, it can be simply overwritten.
             if(index == --_count)
             {
                 _components[_count] = Default(T);
@@ -122,10 +123,15 @@ namespace CMDR
             _idToIndexLookUp[_components[index].ID] = index;
         }
 
+        /// <summary>
+        /// Sort the Components by the ID in ascending order using base16 Radix sort.
+        /// </summary>
         public static void SortComponents()
         {
-            _components = InternalSortComponents(Data.GetMaxIDRange(), 0, 0xf, this.GetSpan(), new Span<T>(new T[_components.Length])).ToArray();
+            // Sort components with Base16 Radix sort.
+            _components = InternalSortComponents(Data.GetMaxIDBitPosition(), 0, 0xf, this.GetSpan(), new Span<T>(new T[_components.Length])).ToArray();
 
+            // Rebuild the ID lookup to reflect the changes.
             for(int i = 0; i < _count; i++)
             {
                 _idToIndexLookUp[_components[i].ID] = i;
@@ -140,7 +146,16 @@ namespace CMDR
 
         private T _getComponent(ID id) => _components[_idToIndexLookUp[id]];
 
-        private static T[] InternalSortComponents<T>(int max, int pos, Span<T> input, Span<T> output)
+        /// <summary>
+        /// Base16 Radix Sort in ascending order. The method is called recursively and swaps the input and output arrays. Use the return value as output. 
+        /// </summary>
+        /// <param name="max"> The most significant bit for generated IDs. </param>
+        /// <param name="pos"> The current bit position. </param>
+        /// <param name="mask"> The current bit mask. </param>
+        /// <param name="input"> The input array that will be sorted. </param>
+        /// <param name="output"> The output array for sorted components. </param>
+        /// <returns> Returns a sorted Component array in ascending order. </returns>
+        private static Span<T> InternalSortComponents(int max, int pos, uint mask, Span<T> input, Span<T> output)
         {
             count = _countPool.Rent(16);
 

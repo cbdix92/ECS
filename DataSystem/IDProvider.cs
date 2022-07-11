@@ -61,7 +61,11 @@ namespace CMDR.DataSystem
             gameObject.ID |= 0x8000000000000000 | NewGameObjectID;
         }
 
-        public static int GetMaxIDRange()
+        /// <summary>
+        /// Finds the most significant bit of generated IDs.
+        /// </summary>
+        /// <returns> Returns the most significant bit position for generated IDs. </returns>
+        public static int GetMaxIDBitPosition()
         {
             int max = 1;
 
