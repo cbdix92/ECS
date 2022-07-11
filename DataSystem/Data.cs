@@ -12,13 +12,13 @@ namespace CMDR.DataSystem
         
         public static readonly int StorageScale = byte.MaxValue;
 
-        public static byte ComponentTotal { get; private set; }
+        public static byte NumberOfComponentTypes { get; private set; }
 
         public static readonly ulong MetaDataMask = 0xffffffff00000000;
 
         public static readonly uint IDMask = 0xffffffff;
 
-        public static Dictionary<uint, GameObject> GameObjects { get; private set; }
+        public static Dictionary<ID, GameObject> GameObjects { get; private set; }
 
         #endregion
 
@@ -28,38 +28,13 @@ namespace CMDR.DataSystem
 
         internal static Dictionary<Query, IComponentCollection<IComponent>> Queries { get; private set; }
 
-        /// <summary>
-        /// Provides an unused GameObject ID.
-        /// </summary>
-        internal static uint NewGameObjectID
-        {
-            get
-            {
-                if(_availableGameObjectIDs.Any())
-                {
-                    return _availableGameObjectIDs.Dequeue();
-                }
-
-                try
-                {
-                    return ++_currentGameObjectID;
-                }
-                catch(OverflowException)
-                {
-                    throw new OverflowException("Max number of 4,294,967,295 GameObjects has been reached. . Quite impressive.");
-                }
-            }
-        }
-
         #endregion
 
         #region PRIVATE_MEMBERS
 
-        private readonly static IEnumerable _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent)));
+        private readonly static IEnumerable _types;
 
-        private static Queue<uint> _availableGameObjectIDs = new Queue<uint>();
-
-        private static uint _currentGameObjectID;
+        private static IDProvider _idProvider;
 
         #endregion
 
@@ -67,24 +42,16 @@ namespace CMDR.DataSystem
 
         public static Data()
         {
-            
+            _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent)));
+
+            GenerateComponentStorage();
+
+            _idProvider = new IDProvier();
         }
 
         #endregion
 
         #region INTERNAL_METHODS
-
-        internal static int GetMaxIDRange()
-        {
-            int max = 1;
-
-            while(max < _currentGameObjectID)
-            {
-                max <<= 4;
-            }
-
-            return max;
-        }
         
         internal static void GenerateComponentStorage()
         {
@@ -104,21 +71,8 @@ namespace CMDR.DataSystem
 
                 Components[TComponent] = Activator.CreateInstance(TNew) as IComponentCollection;
 
-                ComponentTotal++;
+                NumberOfComponentTypes++;
             }
-        }
-
-        /// <summary>
-        /// Generate a new unused GameObject ID for the provided GameObject. 
-        /// Bit 64 (Alive/Dead)
-        /// Bit 33 - 63 (Reserved)
-        /// Bit 1 - 32 (GameObejct ID)
-        /// </summary>
-        /// <param name="gameObject"> GameObject to be give a new ID. </param>
-        internal static void GenerateGameObjectID(ref GameObject gameObject)
-        {
-            gameObject.ID = 0;
-            gameObject.ID |= 0x8000000000000000 | NewGameObjectID;
         }
 
         internal static Query RegisterQuery<T>(Filter filter) where T : struct, IComponent
@@ -135,7 +89,7 @@ namespace CMDR.DataSystem
             return query;
         }
 
-        internal static T GetComponent<T>(uint id) where T : struct, IComponent
+        internal static T GetComponent<T>(ID id) where T : struct, IComponent
         {
             return (T)Components[typeof(T)].Get(id);
         }

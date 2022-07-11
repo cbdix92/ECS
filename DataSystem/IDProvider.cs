@@ -9,7 +9,7 @@ namespace CMDR.DataSystem
         /// <summary>
         /// Provides an unused GameObject ID.
         /// </summary>
-        internal static uint NewGameObjectID
+        public static uint NewGameObjectID
         {
             get
             {
@@ -34,19 +34,34 @@ namespace CMDR.DataSystem
         public IDProvider()
         {
             _availableGameObjectIDs = new Queue<uint>();
+
+            _currentGameObjectID = 0;
         }
 
         #region PRIVATE_MEMBERS
 
-        private uint _currentGameObjectID;
-
         private static Queue<uint> _availableGameObjectIDs;
+
+        private uint _currentGameObjectID;
 
         #endregion
 
         #region PUBLIC_METHODS
 
-        internal static int GetMaxIDRange()
+        /// <summary>
+        /// Generate a new unused GameObject ID for the provided GameObject. 
+        /// Bit 64 (Alive/Dead)
+        /// Bit 33 - 63 (Reserved)
+        /// Bit 1 - 32 (GameObject ID)
+        /// </summary>
+        /// <param name="gameObject"> GameObject to be give a new ID. </param>
+        public static void GenerateGameObjectID(ref GameObject gameObject)
+        {
+            gameObject.ID = 0;
+            gameObject.ID |= 0x8000000000000000 | NewGameObjectID;
+        }
+
+        public static int GetMaxIDRange()
         {
             int max = 1;
 
