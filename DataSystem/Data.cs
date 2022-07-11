@@ -26,7 +26,7 @@ namespace CMDR.DataSystem
 
         internal static Dictionary<Type, IComponentCollection<IComponent>> Components { get; private set; }
 
-        internal static Dictionary<Query, IComponentCollection<IComponent>> Queries { get; private set; }
+        internal static Queryable Queries = new Queryable();
 
         #endregion
 
@@ -58,8 +58,6 @@ namespace CMDR.DataSystem
 
             Components = new Dictionary<Type, IComponentCollection<IComponent>>();
 
-            Queries = new Dictionary<Query, IComponentCollection<IComponent>>();
-
             Type TComponentCollection = typeof(ComponentCollection<>);
 
             foreach(Type TComponent in _types)
@@ -73,20 +71,6 @@ namespace CMDR.DataSystem
 
                 NumberOfComponentTypes++;
             }
-        }
-
-        internal static Query RegisterQuery<T>(Filter filter) where T : struct, IComponent
-        {
-            Query query = new Query(typeof(T), filter);
-
-            if (Queries.ContainsKey(query) == false)
-            {
-                var TNew = typeof(ComponentCollection<>).MakeGenericType(typeof(T));
-
-                Queries.Add(query, Activator.CreateInstance(TNew) as IComponentCollection);
-            }
-
-            return query;
         }
 
         internal static T GetComponent<T>(ID id) where T : struct, IComponent

@@ -4,9 +4,9 @@ namespace CMDR.DataSystem
 {
     public struct Query
     {
-        internal Type Type;
+        internal readonly Type Type;
 
-        internal Filter Filter;
+        internal readonly Filter Filter;
 
         /// <summary>
         /// Checks if a GameObject meets the criteria for this Query.

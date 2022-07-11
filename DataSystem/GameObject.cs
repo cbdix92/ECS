@@ -29,7 +29,7 @@ namespace CMDR.DataSystem
 
         #region CONTRUCTOR
 
-        public GameObject(Scene scene, uint id, Type[] components)
+        public GameObject(Scene scene, ID id, Type[] components)
         {
             Scene = scene;
             ID = id;
@@ -46,17 +46,14 @@ namespace CMDR.DataSystem
             return Contains(typeof(T));
         }
 
-        public bool Contains(Type type)
+        public bool ContainsComponent<Type>() => ContainsComponent(typeof(T));
+
+        public bool ContainsComponent(Type type)
         {
             foreach (Type t in Components)
                 if (t == type)
                     return true;
             return false;
-        }
-
-        public T Get<T>() where T : struct, IComponent<T>
-        {
-            throw new NotImplementedException();
         }
 
         public void Use<T>(T component)

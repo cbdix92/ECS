@@ -53,8 +53,9 @@ namespace CMDR
             GameObjects.Remove(id);
         }
 
-        public ulong Add(GameObject gameObject)
+        public ID Add(GameObject gameObject)
         {
+            
             Data.GenerateGameObjectID(ref gameObject);
 
             // Generate Component IDs
@@ -72,7 +73,7 @@ namespace CMDR
             // Return Component<T> of id
         }
 
-        public GameObject Get(int id)
+        public GameObject Get(ID id)
         {
             return GameObjects[id];
         }
@@ -81,6 +82,17 @@ namespace CMDR
         {
             // Pair Component<T> with GameObject
             // Store Component id and type in GameObject as well as store Component in ComponentTable 
+        }
+
+        public ID Populate(GameObject gameObject)
+        {
+            // Assign ID to GameObject and each of it's components.
+
+            // Store in DataSystem
+
+            // Query sort
+
+            // Return GameObject new ID
         }
 
         #endregion
