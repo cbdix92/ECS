@@ -1,4 +1,5 @@
-
+using System;
+using System.Collections.Generic;
 
 namespace CMDR.DataSystem
 {
@@ -9,7 +10,7 @@ namespace CMDR.DataSystem
         /// <summary>
         /// Provides an unused GameObject ID.
         /// </summary>
-        public static uint NewGameObjectID
+        public uint NewGameObjectID
         {
             get
             {
@@ -40,7 +41,7 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private static Queue<uint> _availableGameObjectIDs;
+        private Queue<uint> _availableGameObjectIDs;
 
         private uint _currentGameObjectID;
 
@@ -55,7 +56,7 @@ namespace CMDR.DataSystem
         /// Bit 1 - 32 (GameObject ID)
         /// </summary>
         /// <param name="gameObject"> GameObject to be give a new ID. </param>
-        public static void GenerateGameObjectID(ref GameObject gameObject)
+        public void GenerateGameObjectID(ref GameObject gameObject)
         {
             gameObject.ID = 0;
             gameObject.ID |= 0x8000000000000000 | NewGameObjectID;
@@ -65,7 +66,7 @@ namespace CMDR.DataSystem
         /// Finds the most significant bit of generated IDs.
         /// </summary>
         /// <returns> Returns the most significant bit position for generated IDs. </returns>
-        public static int GetMaxIDBitPosition()
+        public int GetMaxIDBitPosition()
         {
             int max = 1;
 

@@ -28,6 +28,8 @@ namespace CMDR.DataSystem
 
         internal static Queryable Queries = new Queryable();
 
+        internal static int GetMaxIDBitPosition => _idProvider.GetMaxIDBitPosition();
+
         #endregion
 
         #region PRIVATE_MEMBERS

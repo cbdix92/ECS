@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CMDR.DataSystem;
+using System.Buffers;
 
 namespace CMDR
 {
@@ -37,17 +38,19 @@ namespace CMDR
 
         private Dictionary<ID, int> _idToIndexLookUp;
 
+        private static ArrayPool<uint> _countPool = ArrayPool<uint>.Create();
+
         #endregion
 
         internal ComponentCollection() : this(Data.StorageScale) {}
 
         internal ComponentCollection(int capacity)
         {
-            Capacity = capacity;
+            _capacity = capacity;
 
             _components = new T[capacity];
             
-            _idToIndexLookUp = new Dictionary<ID int>(capacity);
+            _idToIndexLookUp = new Dictionary<ID, int>(capacity);
         }
 
         
@@ -81,7 +84,7 @@ namespace CMDR
 
         public int GetIndex(T component)
         {
-            return GetIndex(component.id);
+            return GetIndex(component.ID);
         }
 
         public int GetIndex(ID id)
@@ -107,12 +110,12 @@ namespace CMDR
         public void RemoveAt(int index)
         {
             // Remove components ID lookup.
-            _idToIndexLookUp.Remove(_components[index]);
+            _idToIndexLookUp.Remove(_components[index].ID);
             
             // If the Component is at the end of the array, it can be simply overwritten.
             if(index == --_count)
             {
-                _components[_count] = Default(T);
+                _components[_count] = default;
                 return;
             }
 
@@ -126,10 +129,10 @@ namespace CMDR
         /// <summary>
         /// Sort the Components by the ID in ascending order using base16 Radix sort.
         /// </summary>
-        public static void SortComponents()
+        public void SortComponents()
         {
             // Sort components with Base16 Radix sort.
-            _components = InternalSortComponents(Data.GetMaxIDBitPosition(), 0, 0xf, this.GetSpan(), new Span<T>(new T[_components.Length])).ToArray();
+            _components = InternalSortComponents(Data.GetMaxIDBitPosition, 0, 0xf, this.GetSpan(), new Span<T>(new T[_components.Length])).ToArray();
 
             // Rebuild the ID lookup to reflect the changes.
             for(int i = 0; i < _count; i++)
@@ -155,9 +158,9 @@ namespace CMDR
         /// <param name="input"> The input array that will be sorted. </param>
         /// <param name="output"> The output array for sorted components. </param>
         /// <returns> Returns a sorted Component array in ascending order. </returns>
-        private static Span<T> InternalSortComponents(int max, int pos, uint mask, Span<T> input, Span<T> output)
+        private Span<T> InternalSortComponents(int max, int pos, uint mask, Span<T> input, Span<T> output)
         {
-            count = _countPool.Rent(16);
+            uint[] count = _countPool.Rent(16);
 
             // Count
             for(int i = 0; i < input.Length; i++)
@@ -190,7 +193,7 @@ namespace CMDR
 
     internal interface IComponentCollection<T>
     {
-        uint Count { get; }
+        int Count { get; }
 
         void Add(T component);
 

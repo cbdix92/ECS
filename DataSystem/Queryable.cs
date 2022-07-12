@@ -1,4 +1,5 @@
-using System.Generic.Collections;
+using System;
+using System.Collections.Generic;
 
 namespace CMDR.DataSystem
 {
@@ -40,7 +41,10 @@ namespace CMDR.DataSystem
         {
             foreach(Query query in Queries.Keys)
             {
-                query.Sort(gameObject) ? Queries[query].Add(Data.Components[query.Type].Get(gameObject.ID)) : continue;
+                if (query.Sort(gameObject))
+                {
+                    Queries[query].Add(Data.Components[query.Type].Get(gameObject.ID));
+                }
             }
         }
 
