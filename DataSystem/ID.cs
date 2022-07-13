@@ -9,9 +9,13 @@ namespace CMDR
         
         #region PUBLIC_MEMBERS
 
-        public uint Id{ get => (uint)_id; }
+        public uint BaseID { get => (uint)(_id & _idMask) }
 
-        public uint MetaData { get => (uint)(_id >> 32); }
+        public short BatchID { get => (short)((_batchMask & _id) >> 24) }
+
+        public ulong Id { get => (_id & _idWithBatchMask) }
+
+        public uint MetaData { get => (uint)(_id >> 40); }
 
         public uint this[uint mask]
         {
@@ -24,11 +28,26 @@ namespace CMDR
 
         #endregion
 
+        #region INTERNAL_MEMBERS
+
+        internal void Retire()
+        {
+            _id = 0;
+        }
+
+        #endregion
+
         #region PRIVATE_MEMBERS
 
         private ulong _id;
 
-        private static uint _idMask = 0xffffffff;
+        private static uint _idMask = 0xffffff;
+
+        private static ulong _batchMask = 0xffff000000;
+
+        private static ulong _idWithBatchMask = _idMask | _batchMask;
+
+        private static ulong _metaDataMask = 0xffffff0000000000;
 
         #endregion
 

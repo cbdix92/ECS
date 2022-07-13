@@ -51,6 +51,38 @@ namespace CMDR.DataSystem
             _idProvider = new IDProvier();
         }
 
+        public static RemoveGameObject(ref ID id)
+        {
+            Components.RemoveGameObject(id);
+            id.Retire();
+        }
+
+        public static bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
+        {
+            if(Components[typeof(T)].Contains(id))
+            {
+                component = (T)Components[typeof(T)].Get(id);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool GetGameObject(Id id, out GameObject gameObject)
+        {
+            if(GameObjects.ContainsKey(id))
+            {
+                gameObject = GameObjects[id];
+
+                return true;
+            }
+            
+            gameObject = GameObject.Default;
+            
+            return false;
+        }
+
         #endregion
 
         #region INTERNAL_METHODS
@@ -73,11 +105,6 @@ namespace CMDR.DataSystem
 
                 NumberOfComponentTypes++;
             }
-        }
-
-        internal static T GetComponent<T>(ID id) where T : struct, IComponent
-        {
-            return (T)Components[typeof(T)].Get(id);
         }
 
         #endregion

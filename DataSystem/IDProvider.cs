@@ -10,13 +10,18 @@ namespace CMDR.DataSystem
         /// <summary>
         /// Provides an unused GameObject ID.
         /// </summary>
-        public uint NewGameObjectID
+        public ulong NewGameObjectID
         {
             get
             {
+
                 if(_availableGameObjectIDs.TryDequeue(out uint result))
                 {
-                    return result;
+                    ulong batch = (result & _batchMask) >> 24;
+                    
+                    batch++;
+
+                    return (batch << 24) | result;
                 }
 
                 try
@@ -34,7 +39,7 @@ namespace CMDR.DataSystem
 
         public IDProvider()
         {
-            _availableGameObjectIDs = new Queue<uint>();
+            _availableGameObjectIDs = new Queue<ulong>();
 
             _currentGameObjectID = 0;
         }
@@ -52,10 +57,11 @@ namespace CMDR.DataSystem
         /// <summary>
         /// Generate a new unused GameObject ID for the provided GameObject. 
         /// Bit 64 (Alive/Dead)
-        /// Bit 33 - 63 (Reserved)
-        /// Bit 1 - 32 (GameObject ID)
+        /// Bit 41 - 63 (Reserved)
+        /// Bit 25 - 40 (BatchID)
+        /// Bit 1 - 24 (GameObject ID)
         /// </summary>
-        /// <param name="gameObject"> GameObject to be give a new ID. </param>
+        /// <returns>  </returns>
         public ID GenerateID()
         {
             return new ID(NewGameObjectID);
