@@ -14,12 +14,16 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
+        private Dictionary<Type, Query[]> _typeToQueryLookup;
+
+        #endregion
+
         public Queryable()
         {
             Queries = new Dictionary<Query, IComponentCollection<IComponent>>();
-        }
 
-        #endregion
+            _typeToQueryLookup = new Dictionary<Type, Query[]>();
+        }
 
         #region PUBLIC_METHODS
 
@@ -32,6 +36,13 @@ namespace CMDR.DataSystem
                 var TNew = typeof(ComponentCollection<>).MakeGenericType(typeof(T));
 
                 Queries.Add(query, Activator.CreateInstance(TNew) as IComponentCollection);
+
+                if(_typeToQueryLookup.ContainsKey(query.Type))
+                {
+                    Array.Resize<Query>(ref _typeToQueryLookup[query], _typeToQueryLookup[query].Length + 1);
+                }
+
+                _typeToQueryLookup[query][_typeToQueryLookup[query].Length - 1] = query;
             }
 
             return query;
@@ -56,6 +67,14 @@ namespace CMDR.DataSystem
                 {
                     Queries[query].Add(Data.Components[query.Type].Get(gameObject.ID));
                 }
+            }
+        }
+
+        public void Update<T>(T component)
+        {
+            foreach(Query query in _typeToQueryLookup[component.Type])
+            {
+                Queries[query].Update(component);
             }
         }
 
