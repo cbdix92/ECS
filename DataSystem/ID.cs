@@ -9,11 +9,11 @@ namespace CMDR
         
         #region PUBLIC_MEMBERS
 
-        public uint BaseID { get => (uint)(_id & _idMask) }
+        public uint BaseID { get => (uint)(_id & _idMask); }
 
-        public short BatchID { get => (short)((_batchMask & _id) >> 24) }
+        public short BatchID { get => (short)((_batchMask & _id) >> 24); }
 
-        public ulong Id { get => (_id & _idWithBatchMask) }
+        public ulong Id { get => (_id & _idWithBatchMask); }
 
         public uint MetaData { get => (uint)(_id >> 40); }
 

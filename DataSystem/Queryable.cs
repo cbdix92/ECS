@@ -37,6 +37,17 @@ namespace CMDR.DataSystem
             return query;
         }
 
+        public void Remove(ID id)
+        {
+            foreach(Query query in Queries.Keys)
+            {
+                if(Queries[query].Contains(id))
+                {
+                    Queries[query].Remove(id);
+                }
+            }
+        }
+
         public void Sort(GameObject gameObject)
         {
             foreach(Query query in Queries.Keys)

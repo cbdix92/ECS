@@ -141,6 +141,11 @@ namespace CMDR
             }
         }
 
+        public void Update(T component)
+        {
+            _components[_idToIndexLookUp[component.Id]] = component;
+        }
+
         
 
         #endregion

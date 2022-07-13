@@ -51,10 +51,31 @@ namespace CMDR.DataSystem
             _idProvider = new IDProvier();
         }
 
-        public static RemoveGameObject(ref ID id)
+        public static bool DestroyGameObject(ref ID id)
         {
-            Components.RemoveGameObject(id);
+            if(GameObjects.ContainsKey(id) == false)
+            {
+                return false;
+            }
+
+            GameObject gameObject = GameObjects[id];
+
+            // Remove all components
+            foreach(Type t in gameObject.Components)
+            {
+                Components[t].Remove(id);
+            }
+            
+            // Remove Query entries
+            Queries.Remove(id);
+
+            // Remove GameObject
+            GameObjects.Remove(id);
+            
+            // Make ID unusable
             id.Retire();
+
+            return true;
         }
 
         public static bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
@@ -80,6 +101,30 @@ namespace CMDR.DataSystem
             
             gameObject = GameObject.Default;
             
+            return false;
+        }
+
+        public static bool Update(GameObject gameObject)
+        {
+            if(GameObjects.ContainsKey(gameObject.Id))
+            {
+                GameObjects[gameObject.Id] = gameObject;
+                
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool Update<T>(T component) where T : struct, IComponent<T>
+        {
+            if(Components[typeof(T)].Contains(component.Id))
+            {
+                Components[typeof(T)].Update(component);
+                
+                return true;
+            }
+
             return false;
         }
 

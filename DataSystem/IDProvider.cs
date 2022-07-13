@@ -15,7 +15,7 @@ namespace CMDR.DataSystem
             get
             {
 
-                if(_availableGameObjectIDs.TryDequeue(out uint result))
+                if(_availableGameObjectIDs.TryDequeue(out ulong result))
                 {
                     ulong batch = (result & _batchMask) >> 24;
                     
@@ -46,7 +46,8 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private Queue<uint> _availableGameObjectIDs;
+        // _availableGameObjectIds should eventually hold a BitArray structs in order to save on space. Since only 40 bits are needed to hold the ID and BatchID, 24 bits are wasted space.
+        private Queue<ulong> _availableGameObjectIDs;
 
         private uint _currentGameObjectID;
 
@@ -61,7 +62,7 @@ namespace CMDR.DataSystem
         /// Bit 25 - 40 (BatchID)
         /// Bit 1 - 24 (GameObject ID)
         /// </summary>
-        /// <returns>  </returns>
+        /// <returns> Creates a new ID that can be used for new GameObjects and Components. </returns>
         public ID GenerateID()
         {
             return new ID(NewGameObjectID);
