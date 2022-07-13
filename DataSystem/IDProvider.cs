@@ -25,7 +25,7 @@ namespace CMDR.DataSystem
                 }
                 catch(OverflowException)
                 {
-                    throw new OverflowException("Max number of 4,294,967,295 GameObjects has been reached. . Quite impressive.");
+                    throw new OverflowException("RIP MEMORY!");
                 }
             }
         }
