@@ -40,17 +40,17 @@ namespace CMDR
 
         #region PUBLIC_METHODS
 
-        public static uint operator |(ID id, uint n) => n | id.MetaData;
+        public static uint operator |(ID id, uint n) => n | id.Id;
 
-        public static uint operator &(ID id,  uint n) => n & id.MetaData; 
+        public static uint operator &(ID id,  uint n) => n & id.Id; 
 
-        public static uint operator ^(ID id, uint n) => n ^ id.MetaData;
+        public static uint operator ^(ID id, uint n) => n ^ id.Id;
 
-        public static uint operator ~(ID id) => ~id.MetaData;
+        public static uint operator ~(ID id) => ~id.Id;
 
-        public static uint operator >>(ID id, int n) => id.MetaData >> n;
+        public static uint operator >>(ID id, int n) => id.Id >> n;
 
-        public static uint operator <<(ID id, int n) => id.MetaData << n;
+        public static uint operator <<(ID id, int n) => id.Id << n;
 
         public static bool operator ==(ID id, ID id2) => id2.Id == id.Id;
 
