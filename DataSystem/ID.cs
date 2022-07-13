@@ -1,4 +1,5 @@
-
+using System;
+using System.Text;
 
 namespace CMDR
 {
@@ -8,16 +9,16 @@ namespace CMDR
         
         #region PUBLIC_MEMBERS
 
-        public uint ID{ get => _id & _idMask; }
+        public uint Id{ get => (uint)_id; }
 
-        public uint MetaData { get => _id & _metaDataMask; }
+        public uint MetaData { get => (uint)(_id >> 32); }
 
-        public uint this[int index]
+        public uint this[uint mask]
         {
-            get => _id & (index << 32);
+            get => (mask & (uint)(_id >> 32));
             set
             {
-                _id |= ((ulong)value << 32)
+                _id |= ((ulong)value << 32);
             }
         }
 
@@ -27,9 +28,7 @@ namespace CMDR
 
         private ulong _id;
 
-        private uint _idMask = 0xffffffff;
-
-        private ulong _metaDataMask = 0xffffffff00000000;
+        private static uint _idMask = 0xffffffff;
 
         #endregion
 
@@ -41,49 +40,47 @@ namespace CMDR
 
         #region PUBLIC_METHODS
 
-        public uint operator |(uint n) => n | MetaData;
+        public static uint operator |(uint n, ID id) => n | id.MetaData;
 
-        public uint operator &(uint n) => n & MetaData; 
+        public static uint operator &(uint n, ID id) => n & id.MetaData; 
 
-        public uint operator ^(uint n) => n ^ MetaData;
+        public static uint operator ^(uint n, ID id) => n ^ id.MetaData;
 
-        public uint operator ~() => ~MetaData;
+        public static uint operator ~(ID id) => ~id.MetaData;
 
-        public uint operator >>(uint n) => MetaData >> n;
+        public static uint operator >>(ID id, int n) => id.MetaData >> n;
 
-        public uint operator <<(uint n) => MetaData << n;
+        public static uint operator <<(ID id, int n) => id.MetaData << n;
 
-        public bool operator ==(ID id) => ID == id.ID;
+        public static bool operator ==(ID id, ID id2) => id2.Id == id.Id;
 
-        public bool operator ==(uint id) => ID == id;
+        public static bool operator ==(ID id, uint n) => id.Id == n;
 
-        public bool operator ==(ulong id) => ID == (uint)(id & _idMask);
+        public static bool operator ==(ID id, ulong n) => id.Id == (n & _idMask);
 
-        public bool operator !=(ID id) => ID != id.ID;
+        public static bool operator !=(ID id, ID id2) => id.Id != id2.Id;
 
-        public bool operator !=(uint id) =>  ID != id;
+        public static bool operator !=(ID id, uint n) => id.Id != n;
 
-        public bool operator !=(ulong id) => ID != (uint)(id & _idMask);
+        public static bool operator !=(ID id, ulong n) => id.Id != (n & _idMask);
 
         // object.GetHashCode needs to overridden so that Dictionary will only consider the ID part of _id;
-        public override int GetHashCode() => ID.GetHashCode();
+        public override int GetHashCode() => Id.GetHashCode();
         
         // object.Equals is overriden so that Dictionary will only consider the ID part of _id.
-        public override bool Equals(object obj) => ID.Equals(obj);
+        public override bool Equals(object obj) => Id.Equals(obj);
 
         public override string ToString()
         {
-            StringBuilder sb = StringBuilderCache.Acquire();
+            StringBuilder sb = new StringBuilder(1 + (sizeof(ulong) * 8));
 
-            //StringBuilder sb = new StringBuilder(++(sizeof(_id) * 8));
+            sb.Append(Convert.ToString(MetaData, 2));
 
-            sb.Append(Convert.ToString(MetaData, 2);
             sb.Append("_");
-            sb.Append(Convert.ToString(ID, 2));
-            
-            //return sb.ToString();
 
-            return StringBuilderCache.GetStringAndRelease(sb);
+            sb.Append(Convert.ToString(Id, 2));
+
+            return sb.ToString();
         }
 
         #endregion
