@@ -38,7 +38,7 @@ namespace CMDR
 
         private Dictionary<ID, int> _idToIndexLookUp;
 
-        private static ArrayPool<uint> _countPool = ArrayPool<uint>.Create();
+        private static ArrayPool<int> _countPool = ArrayPool<int>.Create();
 
         #endregion
 
@@ -160,7 +160,7 @@ namespace CMDR
         /// <returns> Returns a sorted Component array in ascending order. </returns>
         private Span<T> InternalSortComponents(int max, int pos, uint mask, Span<T> input, Span<T> output)
         {
-            uint[] count = _countPool.Rent(16);
+            int[] count = _countPool.Rent(16);
 
             // Count
             for(int i = 0; i < input.Length; i++)
@@ -177,15 +177,17 @@ namespace CMDR
             // Build Output
             for(int i = input.Length - 1; 1 > -1; i--)
             {
-                output[--count[(input[i] & mask) >> pos]] = input[i];
+                output[--count[(input[i].ID & mask) >> pos]] = input[i];
             }
 
             // Exit Conditions
             if(pos >= max)
+            {
                 return output;
+            }
             
             // Recursion
-            return InternalSortComponents<T>(max, pos + 4, mask << 4, output, input);
+            return InternalSortComponents(max, pos + 4, mask << 4, output, input);
         }
 
         #endregion

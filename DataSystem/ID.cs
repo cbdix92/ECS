@@ -50,8 +50,6 @@ namespace CMDR
 
         public static uint operator >>(ID id, int n) => id.Id >> n;
 
-        public static uint operator <<(ID id, int n) => id.Id << n;
-
         public static bool operator ==(ID id, ID id2) => id2.Id == id.Id;
 
         public static bool operator ==(ID id, uint n) => id.Id == n;
