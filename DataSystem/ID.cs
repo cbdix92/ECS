@@ -40,11 +40,11 @@ namespace CMDR
 
         #region PUBLIC_METHODS
 
-        public static uint operator |(uint n, ID id) => n | id.MetaData;
+        public static uint operator |(ID id, uint n) => n | id.MetaData;
 
-        public static uint operator &(uint n, ID id) => n & id.MetaData; 
+        public static uint operator &(ID id,  uint n) => n & id.MetaData; 
 
-        public static uint operator ^(uint n, ID id) => n ^ id.MetaData;
+        public static uint operator ^(ID id, uint n) => n ^ id.MetaData;
 
         public static uint operator ~(ID id) => ~id.MetaData;
 
