@@ -14,9 +14,9 @@ namespace CMDR.DataSystem
         {
             get
             {
-                if(_availableGameObjectIDs.Any())
+                if(_availableGameObjectIDs.TryDequeue(out uint result))
                 {
-                    return _availableGameObjectIDs.Dequeue();
+                    return result;
                 }
 
                 try
@@ -56,10 +56,9 @@ namespace CMDR.DataSystem
         /// Bit 1 - 32 (GameObject ID)
         /// </summary>
         /// <param name="gameObject"> GameObject to be give a new ID. </param>
-        public void GenerateGameObjectID(ref GameObject gameObject)
+        public ID GenerateID()
         {
-            gameObject.ID = 0;
-            gameObject.ID |= 0x8000000000000000 | NewGameObjectID;
+            return new ID(NewGameObjectID);
         }
 
         /// <summary>
