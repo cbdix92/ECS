@@ -17,7 +17,7 @@ namespace CMDR.DataSystem
 
                 if(_availableGameObjectIDs.TryDequeue(out ulong result))
                 {
-                    ulong batch = (result & _batchMask) >> 24;
+                    ulong batch = (result & 0xffff000000) >> 24;
                     
                     batch++;
 

@@ -143,7 +143,7 @@ namespace CMDR
 
         public void Update(T component)
         {
-            _components[_idToIndexLookUp[component.Id]] = component;
+            _components[_idToIndexLookUp[component.ID]] = component;
         }
 
         
@@ -151,8 +151,6 @@ namespace CMDR
         #endregion
 
         #region PRIVATE_METHODS
-
-        private T _getComponent(ID id) => _components[_idToIndexLookUp[id]];
 
         /// <summary>
         /// Base16 Radix Sort in ascending order. The method is called recursively and swaps the input and output arrays. Use the return value as output. 
@@ -180,7 +178,7 @@ namespace CMDR
             }
 
             // Build Output
-            for(int i = input.Length - 1; 1 > -1; i--)
+            for(int i = input.Length - 1; i > -1; i--)
             {
                 output[--count[(input[i].ID & mask) >> pos]] = input[i];
             }
@@ -223,6 +221,8 @@ namespace CMDR
         void Remove(ID id);
 
         void RemoveAt(int index);
+
+        void Update(T component);
     }
 
     internal interface IComponentCollection : IComponentCollection<IComponent>

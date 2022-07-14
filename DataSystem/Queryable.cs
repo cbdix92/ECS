@@ -29,20 +29,23 @@ namespace CMDR.DataSystem
 
         public Query Register<T>(Filter filter) where T : struct, IComponent<T>
         {
-            Query query = new Query(typeof(T), filter);
+            Type type = typeof(T);
+
+            Query query = new Query(type, filter);
 
             if(Queries.ContainsKey(query) == false)
             {
-                var TNew = typeof(ComponentCollection<>).MakeGenericType(typeof(T));
+                Type TNew = typeof(ComponentCollection<>).MakeGenericType(typeof(T));
 
                 Queries.Add(query, Activator.CreateInstance(TNew) as IComponentCollection);
 
-                if(_typeToQueryLookup.ContainsKey(query.Type))
+                if(_typeToQueryLookup.ContainsKey(type))
                 {
-                    Array.Resize<Query>(ref _typeToQueryLookup[query], _typeToQueryLookup[query].Length + 1);
+                    Query[] array = _typeToQueryLookup[type];
+                    Array.Resize<Query>(ref array, _typeToQueryLookup[type].Length + 1);
                 }
 
-                _typeToQueryLookup[query][_typeToQueryLookup[query].Length - 1] = query;
+                _typeToQueryLookup[type][_typeToQueryLookup[type].Length - 1] = query;
             }
 
             return query;
@@ -72,7 +75,7 @@ namespace CMDR.DataSystem
 
         public void Update<T>(T component)
         {
-            foreach(Query query in _typeToQueryLookup[component.Type])
+            foreach(Query query in _typeToQueryLookup[typeof(T)])
             {
                 Queries[query].Update(component);
             }
