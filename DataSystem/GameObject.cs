@@ -9,11 +9,11 @@ namespace CMDR.DataSystem
 
         public readonly Scene Scene;
 
-        public ID ID { get; internal set; }
+        public ID ID;
 
-        public int ComponentCount { get; internal set; }
+        public readonly int ComponentCount;
 
-        public Type[] Components { get; internal set; }
+        public readonly Type[] Components;
 
         #endregion
 
@@ -23,11 +23,7 @@ namespace CMDR.DataSystem
 
         #region INTERNAL_MEMBERS
 
-        internal static GameObject Default = new GameObject(null, 0, new Type[0]);
-
         #endregion
-
-        #region CONTRUCTOR
 
         public GameObject(Scene scene, ID id, Type[] components)
         {
@@ -37,16 +33,9 @@ namespace CMDR.DataSystem
             Components = components;
         }
 
-        #endregion
-
         #region PUBLIC_METHODS
 
-        public bool Contains<T>()
-        {
-            return Contains(typeof(T));
-        }
-
-        public bool ContainsComponent<Type>() => ContainsComponent(typeof(T));
+        public bool ContainsComponent<T>() => ContainsComponent(typeof(T));
 
         public bool ContainsComponent(Type type)
         {
@@ -54,11 +43,6 @@ namespace CMDR.DataSystem
                 if (t == type)
                     return true;
             return false;
-        }
-
-        public void Use<T>(T component)
-        {
-
         }
 
         #endregion

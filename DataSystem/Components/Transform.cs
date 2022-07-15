@@ -7,7 +7,7 @@ namespace CMDR
 
         #region PUBLIC_MEMBERS
 
-        public ID ID { get; internal set; }
+        public ID ID { get; set; }
 
         public Scene Scene { get; internal set; }
         

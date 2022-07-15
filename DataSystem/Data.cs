@@ -12,7 +12,7 @@ namespace CMDR.DataSystem
         
         public static readonly int StorageScale = byte.MaxValue;
 
-        public static byte NumberOfComponentTypes { get; private set; }
+        public static int NumberOfComponentTypes { get; private set; }
 
         public static readonly ulong MetaDataMask = 0xffffffff00000000;
 
@@ -42,13 +42,13 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
-        public static Data()
+        static Data()
         {
             _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent)));
 
             GenerateComponentStorage();
 
-            _idProvider = new IDProvier();
+            _idProvider = new IDProvider();
         }
 
         public static bool DestroyGameObject(ref ID id)
@@ -87,10 +87,12 @@ namespace CMDR.DataSystem
                 return true;
             }
 
+            component = default;
+
             return false;
         }
 
-        public static bool GetGameObject(Id id, out GameObject gameObject)
+        public static bool GetGameObject(ID id, out GameObject gameObject)
         {
             if(GameObjects.ContainsKey(id))
             {
@@ -99,16 +101,16 @@ namespace CMDR.DataSystem
                 return true;
             }
             
-            gameObject = GameObject.Default;
+            gameObject = default;
             
             return false;
         }
 
         public static bool Update(GameObject gameObject)
         {
-            if(GameObjects.ContainsKey(gameObject.Id))
+            if(GameObjects.ContainsKey(gameObject.ID))
             {
-                GameObjects[gameObject.Id] = gameObject;
+                GameObjects[gameObject.ID] = gameObject;
                 
                 return true;
             }
@@ -118,7 +120,7 @@ namespace CMDR.DataSystem
 
         public static bool Update<T>(T component) where T : struct, IComponent<T>
         {
-            if(Components[typeof(T)].Contains(component.Id))
+            if(Components[typeof(T)].Contains(component.ID))
             {
                 Components[typeof(T)].Update(component);
                 

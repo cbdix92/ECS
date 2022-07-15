@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Collections;
+using CMDR.DataSystem;
 
 
 namespace CMDR
@@ -64,7 +64,7 @@ namespace CMDR
 
             GameObjects.Add(gameObject);
 
-            return 0;
+            return default;
         }
 
         public T Get<T>(uint id) where T : struct, IComponent<T>
@@ -93,6 +93,8 @@ namespace CMDR
             // Query sort
 
             // Return GameObject new ID
+
+            throw new NotImplementedException();
         }
 
         #endregion
