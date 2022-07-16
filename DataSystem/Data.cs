@@ -40,8 +40,6 @@ namespace CMDR.DataSystem
 
         #endregion
 
-        #region PUBLIC_METHODS
-
         static Data()
         {
             _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent)));
@@ -50,6 +48,8 @@ namespace CMDR.DataSystem
 
             _idProvider = new IDProvider();
         }
+
+        #region PUBLIC_METHODS
 
         public static bool DestroyGameObject(ref ID id)
         {
@@ -131,9 +131,11 @@ namespace CMDR.DataSystem
         /// <returns> Returns True if the Component was updated, otherwise returns False. </returns>
         public static bool Update<T>(T component) where T : struct, IComponent<T>
         {
-            if(Components[typeof(T)].Contains(component.ID))
+            Type tComp;
+
+            if(Components[tComp].Contains(component.ID))
             {
-                Components[typeof(T)].Update(component);
+                Components[tComp].Update(component);
                 
                 return true;
             }
