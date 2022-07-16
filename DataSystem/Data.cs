@@ -78,20 +78,6 @@ namespace CMDR.DataSystem
             return true;
         }
 
-        public static bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
-        {
-            if(Components[typeof(T)].Contains(id))
-            {
-                component = (T)Components[typeof(T)].Get(id);
-
-                return true;
-            }
-
-            component = default;
-
-            return false;
-        }
-
         public static bool GetGameObject(ID id, out GameObject gameObject)
         {
             if(GameObjects.ContainsKey(id))
@@ -103,6 +89,22 @@ namespace CMDR.DataSystem
             
             gameObject = default;
             
+            return false;
+        }
+        
+        public static bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
+        {
+            Type tComp = typeof(T);
+
+            if(Components[tComp].Contains(id))
+            {
+                component = (T)Components[tComp].Get(id);
+
+                return true;
+            }
+
+            component = default;
+
             return false;
         }
 
@@ -159,7 +161,7 @@ namespace CMDR.DataSystem
                 if(TComponent.Name == typeof(IComponent<>).Name)
                     continue;
 
-                var TNew = TComponentCollection.MakeGenericType(TComponent);
+                Type TNew = TComponentCollection.MakeGenericType(TComponent);
 
                 Components[TComponent] = Activator.CreateInstance(TNew) as IComponentCollection;
 
