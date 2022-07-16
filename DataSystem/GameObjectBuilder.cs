@@ -9,6 +9,17 @@ namespace CMDR
 
         #region PUBLIC_MEMBERS
 
+        public int NumberOfComponents
+        {
+            get
+            {
+                if (_children != null)
+                    return _children.Count;
+                
+                return 0;
+            }
+        }
+
         #endregion
 
         #region PRIVATE_MEMBERS
@@ -39,19 +50,46 @@ namespace CMDR
             return false;
         }
 
-        public void Use<T>(T component) where T : struct, IComponent<T>
+        /// <summary>
+        /// Bind a Component to this GameObjectBuilder.
+        /// </summary>
+        /// <typeparam name="T"> Type of IComponent that will be bound. </typeparam>
+        /// <param name="component"> The Component that will be bound to this GameObjectBuilder. </param>
+        public void Bind<T>(T component) where T : struct, IComponent<T>
         {
-            
+            Type tComp = typeof(T);
+
+            if(_children.ContainsKey(tComp))
+            {
+                _children[tComp] = component;
+                return;
+            }
+
+            _children.Add(tComp, component);
         }
 
-        public void Remove(IComponent component)
+        /// <summary>
+        /// Unbind a Component from this GameObjectBuilder.
+        /// </summary>
+        /// <typeparam name="T"> Type of IComponent that will be unbound. </typeparam>
+        public void UnBind<T>() where T : struct, IComponent<T>
         {
+            Type tComp = typeof(T);
 
+            UnBind(tComp);
+        }
+
+        public void UnBind(Type tComp)
+        {
+            if (_children.ContainsKey(tComp))
+            {
+                _children.Remove(tComp);
+            }
         }
 
         public void RemoveAll()
         {
-
+            _children.Clear();
         }
 
         #endregion

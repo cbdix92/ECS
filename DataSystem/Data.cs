@@ -106,6 +106,11 @@ namespace CMDR.DataSystem
             return false;
         }
 
+        /// <summary>
+        /// Update a GameObject within the data storage.
+        /// </summary>
+        /// <param name="gameObject"> The GameObject that is to be updated. </param>
+        /// <returns> Return True if the GameObject was updated, otherwise returns False. </returns>
         public static bool Update(GameObject gameObject)
         {
             if(GameObjects.ContainsKey(gameObject.ID))
@@ -118,6 +123,12 @@ namespace CMDR.DataSystem
             return false;
         }
 
+        /// <summary>
+        /// Update a Component within the data storage.
+        /// </summary>
+        /// <typeparam name="T"> Type of IComponent. </typeparam>
+        /// <param name="component"> The Component that is to be updated. </param>
+        /// <returns> Returns True if the Component was updated, otherwise returns False. </returns>
         public static bool Update<T>(T component) where T : struct, IComponent<T>
         {
             if(Components[typeof(T)].Contains(component.ID))
@@ -153,12 +164,6 @@ namespace CMDR.DataSystem
                 NumberOfComponentTypes++;
             }
         }
-
-        #endregion
-
-        #region PRIVATE_METHODS
-
-
 
         #endregion
     }
