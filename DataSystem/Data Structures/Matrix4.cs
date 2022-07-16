@@ -245,7 +245,7 @@ namespace CMDR
 
         public static Matrix4 CreateRotation(float x, float y, float z) => throw new NotImplementedException("CreateRotation");
 
-        public static Matrix4 CreateRotation(Vector3 vec) => return CreateRotation(vec.X, vec.Y, vec.Z);
+        public static Matrix4 CreateRotation(Vector3 vec) => CreateRotation(vec.X, vec.Y, vec.Z);
 
         public static Matrix4 CreateRotationX(float pitch)
         {

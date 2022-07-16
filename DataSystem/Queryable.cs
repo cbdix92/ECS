@@ -73,7 +73,7 @@ namespace CMDR.DataSystem
             }
         }
 
-        public void Update<T>(T component)
+        public void Update<T>(T component) where T : struct, IComponent<T>
         {
             foreach(Query query in _typeToQueryLookup[typeof(T)])
             {

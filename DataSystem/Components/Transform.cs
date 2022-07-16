@@ -210,13 +210,18 @@ namespace CMDR
 
         public void Teleport(Vector3 pos) => (_pos, ChangeState) = (pos, true);
 
-        public void Move(float x, float y, float z) => (X, Y, Z) += (x, y, z);
+        public void Move(float x, float y, float z)
+        {
+            X += x;
+            Y += y;
+            Z += z;
+        }
 
         public void Move(Vector3 direction) => Move(direction.X, direction.Y, direction.Z);
 
-        public void Scale(float scale) => (XScale, YScale, ZScale) = (scale, scale, scale);
+        public void SetScale(float scale) => (XScale, YScale, ZScale) = (scale, scale, scale);
 
-        public void Scale(Vector3 scale) => (XScale, YScale, ZScale) = Vector3.Tuple(scale);
+        public void SetScale(Vector3 scale) => (XScale, YScale, ZScale) = scale.Tuple();
 
         #endregion
 

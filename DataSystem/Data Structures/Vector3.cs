@@ -69,6 +69,8 @@ namespace CMDR
 
         public Vector3 Cross(Vector3 other) => Cross(this, other);
 
+        public (float x, float y, float z) Tuple() => (X, Y, Z);
+
         public float Dot(Vector3 other) => Dot(this, other);
 
         public static Vector3 Cross(Vector3 v1, Vector3 v2)

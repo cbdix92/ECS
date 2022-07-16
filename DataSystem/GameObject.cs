@@ -17,14 +17,6 @@ namespace CMDR.DataSystem
 
         #endregion
 
-        #region PRIVATE_MEMBERS
-
-        #endregion
-
-        #region INTERNAL_MEMBERS
-
-        #endregion
-
         public GameObject(Scene scene, ID id, Type[] components)
         {
             Scene = scene;

@@ -30,14 +30,14 @@ namespace CMDR
 
         public static uint LoadScene(string path)
         {
-            return 0;
+            throw new NotImplementedException();
         }
 
         public static void SaveScene() => SaveScene(ActiveScene);
 
         public static void SaveScene(Scene scene)
         {
-
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -59,15 +59,15 @@ namespace CMDR
 
         #region PUBLIC_METHODS
 
-        public static uint operator |(ID id, uint n) => n | id.Id;
+        public static ulong operator |(ID id, uint n) => n | id.Id;
 
-        public static uint operator &(ID id,  uint n) => n & id.Id; 
+        public static ulong operator &(ID id,  uint n) => n & id.Id; 
 
-        public static uint operator ^(ID id, uint n) => n ^ id.Id;
+        public static ulong operator ^(ID id, uint n) => n ^ id.Id;
 
-        public static uint operator ~(ID id) => ~id.Id;
+        public static ulong operator ~(ID id) => ~id.Id;
 
-        public static uint operator >>(ID id, int n) => id.Id >> n;
+        public static ulong operator >>(ID id, int n) => id.Id >> n;
 
         public static bool operator ==(ID id, ID id2) => id2.Id == id.Id;
 
@@ -89,13 +89,15 @@ namespace CMDR
 
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(1 + (sizeof(ulong) * 8));
+            StringBuilder sb = new StringBuilder(17 + (sizeof(ulong) * 8));
 
             sb.Append(Convert.ToString(MetaData, 2));
 
             sb.Append("_");
 
-            sb.Append(Convert.ToString(Id, 2));
+            sb.Append(Convert.ToString(BatchID, 2));
+
+            sb.Append(Convert.ToString(BaseID, 2));
 
             return sb.ToString();
         }
