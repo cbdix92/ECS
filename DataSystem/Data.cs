@@ -8,7 +8,7 @@ namespace CMDR.DataSystem
 {
     public static class Data
     {
-        #region  PUBLIC_MEMBERS
+        #region PUBLIC_MEMBERS
         
         public static readonly int StorageScale = byte.MaxValue;
 
@@ -22,7 +22,7 @@ namespace CMDR.DataSystem
 
         #endregion
 
-        #region  INTERNAL_MEMBERS
+        #region INTERNAL_MEMBERS
 
         internal static Dictionary<Type, IComponentCollection<IComponent>> Components { get; private set; }
 
