@@ -18,21 +18,21 @@ namespace CMDR.DataSystem
 
         public static readonly uint IDMask = 0xffffffff;
 
-        public static Dictionary<ID, GameObject> GameObjects { get; private set; }
-
         #endregion
 
         #region INTERNAL_MEMBERS
-
-        internal static Dictionary<Type, IComponentCollection<IComponent>> Components { get; private set; }
-
-        internal static Queryable Queries = new Queryable();
 
         internal static int GetMaxIDBitPosition => _idProvider.GetMaxIDBitPosition();
 
         #endregion
 
         #region PRIVATE_MEMBERS
+
+        private static Dictionary<ID, GameObject> _gameObjects;
+
+        private static Dictionary<Type, IComponentCollection<IComponent>> _components;
+
+        private static Queryable _queries = new Queryable();
 
         private readonly static IEnumerable _types;
 
@@ -108,6 +108,16 @@ namespace CMDR.DataSystem
             return false;
         }
 
+        public static Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
+        {
+            return _queries.Register<T>(filter);
+        }
+
+        public static QueryList GetQuery<T>(Qeury query) where T : struct, IComponent<T>
+        {
+            return _queries.GetQuery<T>(query, _components[query.Type].GetSpan());
+        }
+
         /// <summary>
         /// Update a GameObject within the data storage.
         /// </summary>
@@ -151,8 +161,9 @@ namespace CMDR.DataSystem
         
         internal static void GenerateComponentStorage()
         {
+            _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
 
-            Components = new Dictionary<Type, IComponentCollection<IComponent>>();
+            _components = new Dictionary<Type, IComponentCollection<IComponent>>(_types.Length - 1);
 
             Type TComponentCollection = typeof(ComponentCollection<>);
 
@@ -163,7 +174,7 @@ namespace CMDR.DataSystem
 
                 Type TNew = TComponentCollection.MakeGenericType(TComponent);
 
-                Components[TComponent] = Activator.CreateInstance(TNew) as IComponentCollection;
+                _components[TComponent] = Activator.CreateInstance(TNew) as IComponentCollection;
 
                 NumberOfComponentTypes++;
             }

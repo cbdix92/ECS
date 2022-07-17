@@ -10,6 +10,8 @@ namespace CMDR.DataSystem
 
         public Dictionary<Query, IComponentCollection<IComponent>> Queries { get; private set; }
 
+        public Dictionary<Query, int[]> Queries { get; private set; }
+
         #endregion
 
         #region PRIVATE_MEMBERS
@@ -21,6 +23,8 @@ namespace CMDR.DataSystem
         public Queryable()
         {
             Queries = new Dictionary<Query, IComponentCollection<IComponent>>();
+
+            Queries = new Dictionary<Query, int[]>();
 
             _typeToQueryLookup = new Dictionary<Type, Query[]>();
         }
@@ -51,6 +55,41 @@ namespace CMDR.DataSystem
             return query;
         }
 
+        public QueryList GetQuery<T>(Query query, Span<T> components)
+        {
+
+            /// If spans cannot be sliced by other spans then this will have to be created in the ComponentCollection if passing the array causes allocations.
+            /// The Indices will have to be given to the ComponentCollection to build the QueryList.
+
+            Span<int> indices = Queries[query];
+
+            // TODO ...
+            // This could be stored elsewhere and purged before being rebuit. This would eliminate unnecessary allocations.
+            QueryList result = new QueryList();
+
+            for(int i = 0; i < indices.Length; )
+            {
+                if(indices[i+1] == -1)
+                {
+                    // Store a slice
+                    result.Add(new Span<T>(components, indices[i] indices[i+2]));
+                    
+                    i +=2
+                }
+                else
+                {
+                    // Store a single
+                    result.Add(new Span<T>(components, indices[i], indices[i]));
+
+                    i++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remove all occurrences within the query system. 
+        /// </summary>
+        /// <param name="id"> The ID of the object that is being removed. </param>
         public void Remove(ID id)
         {
             foreach(Query query in Queries.Keys)
@@ -62,6 +101,10 @@ namespace CMDR.DataSystem
             }
         }
 
+        /// <summary>
+        /// Sort a GameObject into the query system.
+        /// </summary>
+        /// <param name="gameObject"> The GameObject that is to be sorted. </param>
         public void Sort(GameObject gameObject)
         {
             foreach(Query query in Queries.Keys)
@@ -70,14 +113,6 @@ namespace CMDR.DataSystem
                 {
                     Queries[query].Add(Data.Components[query.Type].Get(gameObject.ID));
                 }
-            }
-        }
-
-        public void Update<T>(T component) where T : struct, IComponent<T>
-        {
-            foreach(Query query in _typeToQueryLookup[typeof(T)])
-            {
-                Queries[query].Update(component);
             }
         }
 
