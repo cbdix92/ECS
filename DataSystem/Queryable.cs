@@ -8,9 +8,7 @@ namespace CMDR.DataSystem
         
         #region PUBLIC_MEMBERS
 
-        public Dictionary<Query, IComponentCollection<IComponent>> Queries { get; private set; }
-
-        public Dictionary<Query, int[]> Queries { get; private set; }
+        public Dictionary<Query, IQueryBuilder<IComponent>> Queries { get; private set; }
 
         #endregion
 
@@ -22,9 +20,8 @@ namespace CMDR.DataSystem
 
         public Queryable()
         {
-            Queries = new Dictionary<Query, IComponentCollection<IComponent>>();
 
-            Queries = new Dictionary<Query, int[]>();
+            Queries = new Dictionary<Query, IQueryBuilder<IComponent>>();
 
             _typeToQueryLookup = new Dictionary<Type, Query[]>();
         }
@@ -39,9 +36,9 @@ namespace CMDR.DataSystem
 
             if(Queries.ContainsKey(query) == false)
             {
-                Type TNew = typeof(ComponentCollection<>).MakeGenericType(typeof(T));
+                Type TNew = typeof(QueryBuilder<>).MakeGenericType(typeof(T));
 
-                Queries.Add(query, Activator.CreateInstance(TNew) as IComponentCollection);
+                Queries.Add(query, Activator.CreateInstance(TNew) as IQueryBuilder);
 
                 if(_typeToQueryLookup.ContainsKey(type))
                 {
@@ -55,7 +52,7 @@ namespace CMDR.DataSystem
             return query;
         }
 
-        public QueryList GetQuery<T>(Query query, Span<T> components)
+        public QueryList GetQueryList<T>(Query query, Span<T> components)
         {
 
             /// If spans cannot be sliced by other spans then this will have to be created in the ComponentCollection if passing the array causes allocations.
@@ -65,7 +62,7 @@ namespace CMDR.DataSystem
 
             // TODO ...
             // This could be stored elsewhere and purged before being rebuit. This would eliminate unnecessary allocations.
-            QueryList result = new QueryList();
+            QueryList result = Queries[query].GetQueryList();
 
             for(int i = 0; i < indices.Length; )
             {
