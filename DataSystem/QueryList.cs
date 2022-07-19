@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace CMDR.DataSystem
 {
-    public class QueryList<T> : IDisposable
+    public ref struct QueryList<T>
     {
 
         #region PUBLIC_MEMBERS
@@ -17,8 +17,6 @@ namespace CMDR.DataSystem
         #endregion
 
         #region PRIVATE_MEMBERS
-
-        private bool _disposed = false;
 
         private Span<T> _data;
 
@@ -47,19 +45,19 @@ namespace CMDR.DataSystem
         }
 
         /// <summary>
-        /// Deallocate internal data if needed then allocate new memory on the stack for a new internal Span. 
+        /// Allocate new memory on the stack for a new internal Span. 
         /// </summary>
-        public void Rebuild(int maxSlices)
+        public void Build(int maxSlices)
         {
             Purge();
             
             Capacity = maxSlices;
             
-            Alloc = Marshal.AllocHGlobal(sizeof(Span<T>) * maxSlices);
 
             unsafe
             {
-                data = new Span<Span<T>>(Alloc.ToPointer(), MaxSlices);
+                Alloc = Marshal.AllocHGlobal(size);
+                _data = new Span<T>(Alloc.ToPointer(), maxSlices);
             }
 
         }
@@ -72,24 +70,6 @@ namespace CMDR.DataSystem
             Marshal.FreeHGlobal(Alloc);
             Alloc = IntPtr.Zero;
             Count = 0;
-        }
-
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if(_disposed)
-                return;
-            if(disposing)
-            {
-                Marshal.FreeHGlobal(Alloc);
-            }
-
-            _disposed = true;
         }
 
         #endregion

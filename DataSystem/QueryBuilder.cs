@@ -12,6 +12,8 @@ namespace CMDR.DataSystem
 
         public int SliceCount { get; private set; }
 
+        public int TotalComponents { get; private set; }
+
         #endregion
 
         #region PRIVATE_MEMBERS
@@ -62,7 +64,7 @@ namespace CMDR.DataSystem
 
         public QueryList<T> GetQueryList(T[] components)
         {
-            _queryList.Rebuild(SliceCount);
+            _queryList.Build(SliceCount);
 
             for (int i = 0; i < _data.Length;)
             {
