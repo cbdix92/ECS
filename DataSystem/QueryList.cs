@@ -20,7 +20,7 @@ namespace CMDR.DataSystem
 
         private bool _disposed = false;
 
-        private Span<Span<T>> _data;
+        private Span<T> _data;
 
         #endregion
 

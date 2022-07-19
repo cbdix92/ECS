@@ -60,9 +60,27 @@ namespace CMDR.DataSystem
 
         }
 
-        public QueryList<T> GetQueryList()
+        public QueryList<T> GetQueryList(T[] components)
         {
             _queryList.Rebuild(SliceCount);
+
+            for (int i = 0; i < _data.Length;)
+            {
+                if (_data[i + 1] == -1)
+                {
+                    // Store a slice
+                    _queryList.Add(new Span<T>(components, _data[i], _data[i + 2]));
+
+                    i += 2;
+                }
+                else
+                {
+                    // Store a single
+                    _queryList.Add(new Span<T>(components, _data[i], _data[i]));
+
+                    i++;
+                }
+            }
 
             return _queryList;
         }

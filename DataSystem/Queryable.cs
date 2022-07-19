@@ -52,17 +52,15 @@ namespace CMDR.DataSystem
             return query;
         }
 
-        public QueryList GetQueryList<T>(Query query, Span<T> components)
+        public QueryList GetQueryList<T>(Query query, IComponent[] components)
         {
 
             /// If spans cannot be sliced by other spans then this will have to be created in the ComponentCollection if passing the array causes allocations.
             /// The Indices will have to be given to the ComponentCollection to build the QueryList.
 
-            Span<int> indices = Queries[query];
-
             // TODO ...
             // This could be stored elsewhere and purged before being rebuit. This would eliminate unnecessary allocations.
-            QueryList result = Queries[query].GetQueryList();
+            QueryList result = Queries[query].GetQueryList(components);
 
             for(int i = 0; i < indices.Length; )
             {

@@ -53,24 +53,24 @@ namespace CMDR.DataSystem
 
         public static bool DestroyGameObject(ref ID id)
         {
-            if(GameObjects.ContainsKey(id) == false)
+            if(_gameObjects.ContainsKey(id) == false)
             {
                 return false;
             }
 
-            GameObject gameObject = GameObjects[id];
+            GameObject gameObject = _gameObjects[id];
 
             // Remove all components
             foreach(Type t in gameObject.Components)
             {
-                Components[t].Remove(id);
+                _components[t].Remove(id);
             }
             
             // Remove Query entries
             Queries.Remove(id);
 
             // Remove GameObject
-            GameObjects.Remove(id);
+            _gameObjects.Remove(id);
             
             // Make ID unusable
             id.Retire();
@@ -80,9 +80,9 @@ namespace CMDR.DataSystem
 
         public static bool GetGameObject(ID id, out GameObject gameObject)
         {
-            if(GameObjects.ContainsKey(id))
+            if(_gameObjects.ContainsKey(id))
             {
-                gameObject = GameObjects[id];
+                gameObject = _gameObjects[id];
 
                 return true;
             }
@@ -96,9 +96,9 @@ namespace CMDR.DataSystem
         {
             Type tComp = typeof(T);
 
-            if(Components[tComp].Contains(id))
+            if(_components[tComp].Contains(id))
             {
-                component = (T)Components[tComp].Get(id);
+                component = (T)_components[tComp].Get(id);
 
                 return true;
             }
@@ -113,9 +113,9 @@ namespace CMDR.DataSystem
             return _queries.Register<T>(filter);
         }
 
-        public static QueryList GetQuery<T>(Qeury query) where T : struct, IComponent<T>
+        public static QueryList<T> GetQuery<T>(Query query) where T : struct, IComponent<T>
         {
-            return _queries.GetQuery<T>(query, _components[query.Type].GetSpan());
+            return _queries.GetQueryList<T>(query, _components[query.Type].ToArray());
         }
 
         /// <summary>
@@ -125,9 +125,9 @@ namespace CMDR.DataSystem
         /// <returns> Return True if the GameObject was updated, otherwise returns False. </returns>
         public static bool Update(GameObject gameObject)
         {
-            if(GameObjects.ContainsKey(gameObject.ID))
+            if(_gameObjects.ContainsKey(gameObject.ID))
             {
-                GameObjects[gameObject.ID] = gameObject;
+                _gameObjects[gameObject.ID] = gameObject;
                 
                 return true;
             }
@@ -143,11 +143,11 @@ namespace CMDR.DataSystem
         /// <returns> Returns True if the Component was updated, otherwise returns False. </returns>
         public static bool Update<T>(T component) where T : struct, IComponent<T>
         {
-            Type tComp;
+            Type tComp = typeof(T);
 
-            if(Components[tComp].Contains(component.ID))
+            if(_components[tComp].Contains(component.ID))
             {
-                Components[tComp].Update(component);
+                _components[tComp].Update(component);
                 
                 return true;
             }

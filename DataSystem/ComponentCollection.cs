@@ -132,13 +132,18 @@ namespace CMDR
         public void SortComponents()
         {
             // Sort components with Base16 Radix sort.
-            _components = InternalSortComponents(Data.GetMaxIDBitPosition, 0, 0xf, this.GetSpan(), new Span<T>(new T[_components.Length])).ToArray();
+            _components = InternalSortComponents(Data.GetMaxIDBitPosition, 0, 0xf, GetSpan(), new Span<T>(new T[_components.Length])).ToArray();
 
             // Rebuild the ID lookup to reflect the changes.
             for(int i = 0; i < _count; i++)
             {
                 _idToIndexLookUp[_components[i].ID] = i;
             }
+        }
+
+        public T[] ToArray()
+        {
+            return _components;
         }
 
         public void Update(T component)
@@ -221,6 +226,8 @@ namespace CMDR
         void Remove(ID id);
 
         void RemoveAt(int index);
+
+        T[] ToArray();
 
         void Update(T component);
     }
