@@ -14,6 +14,9 @@ namespace CMDR
 
         public int Capacity { get => _capacity; }
 
+        /// <summary>
+        /// The size in bytes of the IComponent that this collection stores.
+        /// </summary>
         public readonly int Size;
 
         public T this[int index]

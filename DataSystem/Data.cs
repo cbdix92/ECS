@@ -115,7 +115,7 @@ namespace CMDR.DataSystem
 
         public static QueryList<T> GetQuery<T>(Query query) where T : struct, IComponent<T>
         {
-            return _queries.GetQueryList<T>(query, _components[query.Type].ToArray());
+            return _queries.GetQueryList<T>(query, _components[query.Type]);
         }
 
         /// <summary>
