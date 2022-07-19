@@ -174,7 +174,9 @@ namespace CMDR.DataSystem
 
                 Type TNew = TComponentCollection.MakeGenericType(TComponent);
 
-                _components[TComponent] = Activator.CreateInstance(TNew) as IComponentCollection;
+                object[] args = new object[] { (object)StorageScale, (object)Marshal.SizeOf(TComponent) };
+
+                _components[TComponent] = Activator.CreateInstance(TNew, args) as IComponentCollection;
 
                 NumberOfComponentTypes++;
             }

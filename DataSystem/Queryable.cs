@@ -52,7 +52,7 @@ namespace CMDR.DataSystem
             return query;
         }
 
-        public QueryList GetQueryList<T>(Query query, IComponent[] components)
+        public QueryList GetQueryList<T>(Query query, IComponentCollection<IComponent> components)
         {
 
             /// If spans cannot be sliced by other spans then this will have to be created in the ComponentCollection if passing the array causes allocations.

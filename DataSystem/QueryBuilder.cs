@@ -62,23 +62,24 @@ namespace CMDR.DataSystem
 
         }
 
-        public QueryList<T> GetQueryList(T[] components)
+        public QueryList<T> GetQueryList(IComponentCollection<IComponent> components)
         {
-            _queryList.Build(SliceCount);
+            _queryList.Build(components.Size * TotalComponents, SliceCount);
 
-            for (int i = 0; i < _data.Length;)
+            int i = 0;
+            while (i < _data.Length;)
             {
                 if (_data[i + 1] == -1)
                 {
                     // Store a slice
-                    _queryList.Add(new Span<T>(components, _data[i], _data[i + 2]));
+                    _queryList.Add(new Memory<T>(components, _data[i], _data[i + 2]));
 
                     i += 2;
                 }
                 else
                 {
                     // Store a single
-                    _queryList.Add(new Span<T>(components, _data[i], _data[i]));
+                    _queryList.Add(new Memory<T>(components, _data[i], _data[i]));
 
                     i++;
                 }
@@ -96,7 +97,7 @@ namespace CMDR.DataSystem
             // Check if number to the right is sequential
             if (_data[newIndex] + 1 == _data[newIndex + 1])
             {
-                // Right side is part of a span.
+                // Right side is part of a slice.
                 if (_data[newIndex + 2] == -1)
                 {
                     // Remove the right neighbor and shift the array left.

@@ -14,6 +14,8 @@ namespace CMDR
 
         public int Capacity { get => _capacity; }
 
+        public readonly int Size;
+
         public T this[int index]
         {
             get
@@ -42,11 +44,11 @@ namespace CMDR
 
         #endregion
 
-        internal ComponentCollection() : this(Data.StorageScale) {}
-
-        internal ComponentCollection(int capacity)
+        internal ComponentCollection(int capacity, int size)
         {
             _capacity = capacity;
+
+            Size = size;
 
             _components = new T[capacity];
             

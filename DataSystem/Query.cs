@@ -3,17 +3,6 @@
 namespace CMDR.DataSystem
 {
 
-    public struct Query<T> where T : struct, IComponent<T>
-    {
-        public Type Type;
-
-        public Filter<T> Filter;
-
-        public Query(Filter<T> filter) => (Type, Filter) = (typeof(T), filter);
-    }
-
-    public delegate bool Filter<T>(T component) where T : struct, IComponent<T>;
-
     public struct Query
     {
         internal readonly Type Type;
