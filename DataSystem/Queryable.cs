@@ -20,7 +20,6 @@ namespace CMDR.DataSystem
 
         public Queryable()
         {
-
             Queries = new Dictionary<Query, IQueryBuilder<IComponent>>();
 
             _typeToQueryLookup = new Dictionary<Type, Query[]>();

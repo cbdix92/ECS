@@ -17,7 +17,7 @@ namespace CMDR
         /// <summary>
         /// The size in bytes of the IComponent that this collection stores.
         /// </summary>
-        public readonly int Size;
+        public int Size { get; }
 
         public T this[int index]
         {
@@ -209,6 +209,8 @@ namespace CMDR
     internal interface IComponentCollection<T>
     {
         int Count { get; }
+
+        int Size { get; }
 
         void Add(T component);
 

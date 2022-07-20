@@ -67,19 +67,19 @@ namespace CMDR.DataSystem
             _queryList.Build(components.Size * TotalComponents, SliceCount);
 
             int i = 0;
-            while (i < _data.Length;)
+            while (i < _data.Length)
             {
                 if (_data[i + 1] == -1)
                 {
                     // Store a slice
-                    _queryList.Add(new Memory<T>(components, _data[i], _data[i + 2]));
+                    _queryList.Add(new Memory<IComponent>(components.ToArray(), _data[i], _data[i + 2]));
 
                     i += 2;
                 }
                 else
                 {
                     // Store a single
-                    _queryList.Add(new Memory<T>(components, _data[i], _data[i]));
+                    _queryList.Add(new Memory<IComponent>(components.ToArray(), _data[i], _data[i]));
 
                     i++;
                 }
@@ -142,7 +142,7 @@ namespace CMDR.DataSystem
 
         void OnMove(int previousIndex, int newIndex);
 
-        QueryList<T> GetQueryList();
+        QueryList<T> GetQueryList(IComponentCollection<IComponent> components);
     }
 
     internal interface IQueryBuilder : IQueryBuilder<IComponent>
