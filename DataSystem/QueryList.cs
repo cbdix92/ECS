@@ -49,7 +49,7 @@ namespace CMDR.DataSystem
 
         }
 
-        public void OnMove(int previousIndex, int newIndex)
+        public void OnMove(int previousIndexPosition, int newIndexPosition)
         {
 
         }
@@ -58,21 +58,39 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_METHODS
 
-        private void SliceCheck(int newIndex)
+        private void SliceCheck(int newIndexPosition)
         {
-            // Check if number to the right is sequential
-            if (_data[newIndex] + 1 == _data[newIndex + 1])
+            if (RightIsSequential(newIndexPosition) && RightIsSlice(newIndexPosition))
             {
-                // Right side is part of a slice.
-                if (_data[newIndex + 2] == -1)
-                {
-                    // Remove the right neighbor and shift the array left.
-                    for(int i = newIndex + 1; i < Count; i++)
-                    {
-                        _data[i] = _data[i + 1];
-                    }
-                }
+                // Remove the right neighbor
+                Remove(newIndexPosition + 1);
+
+                return;
             }
+
+            if (LeftIsSequential(newIndexPosition) && LeftIsSlice(newIndexPosition))
+            {
+                // Remove the left neighbor
+                Remove(newIndexPosition - 1);
+                
+                return;
+            }
+
+            if (RightIsSequential(newIndexPosition) && LeftIsNeagtiveOne(newIndexPosition))
+            {
+                Remove(newIndexPosition);
+                
+                return;
+            }
+
+            if (LeftIsSequential(newIndexPosition) && RightIsNegativeOne(newIndexPosition))
+            {
+                Remove(newIndexPosition);
+                
+                return;
+            }
+
+
         }
 
         private int CheckRight(int pos)
@@ -85,17 +103,37 @@ namespace CMDR.DataSystem
             return _data[pos - 1];
         }
 
-        private bool CheckRightSequential(int pos)
+        private bool RightIsSequential(int pos)
         {
             return _data[pos] + 1 == CheckRight(pos);
         }
 
-        private bool CheckLeftSequential(int pos)
+        private bool LeftIsSequential(int pos)
         {
             return _data[pos] - 1 == CheckLeft(pos);
         }
 
-        public void Insert(int pos, int index)
+        private bool RightIsSlice(int pos)
+        {
+            return _data[pos + 2] == -1;
+        }
+
+        private bool LeftIsSlice(int pos)
+        {
+            return _data[pos - 2] == -1;
+        }
+
+        private bool RightIsNegativeOne(int pos)
+        {
+            return _data[pos + 1] == -1;
+        }
+
+        private bool LeftIsNeagtiveOne(int pos)
+        {
+            return _data[pos - 1] == -1;
+        }
+
+        private void Insert(int pos, int index)
         {
             // Check if storage is at capacity.
             if(_count == _data.Length)
@@ -115,6 +153,16 @@ namespace CMDR.DataSystem
             _data[pos] = index;
 
             _count++;
+        }
+
+        private void Remove(int indexPosition)
+        {
+            for (int i = indexPosition; i < _count; i++)
+            {
+                _data[i] = _data[i + 1];
+            }
+
+            _count--;
         }
 
         #endregion
