@@ -18,6 +18,9 @@ namespace CMDR.DataSystem
 
         public static readonly uint IDMask = 0xffffffff;
 
+        // GenerateComponentStorage needs to be called from a static field to insure that component storage is created prior to static constructors
+        public static readonly bool Initialized = GenerateComponentStorage();
+
         #endregion
 
         #region INTERNAL_MEMBERS
@@ -43,8 +46,6 @@ namespace CMDR.DataSystem
         static Data()
         {
             _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent)));
-
-            GenerateComponentStorage();
 
             _idProvider = new IDProvider();
         }
@@ -118,6 +119,11 @@ namespace CMDR.DataSystem
             return _queries.GetQueryList<T>(query, _components[query.Type]);
         }
 
+        public static bool GetQuery<T>(Query query, out Span<T> components) where T : struct, IComponent
+        {
+            return _queries.GetQuery(query, out components);
+        }
+
         /// <summary>
         /// Update a GameObject within the data storage.
         /// </summary>
@@ -159,7 +165,7 @@ namespace CMDR.DataSystem
 
         #region INTERNAL_METHODS
         
-        internal static void GenerateComponentStorage()
+        internal static bool GenerateComponentStorage()
         {
             _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
 
@@ -180,6 +186,13 @@ namespace CMDR.DataSystem
 
                 NumberOfComponentTypes++;
             }
+
+            return true;
+        }
+
+        internal static IComponentCollection GetComponentsCollectionReference(Type type)
+        {
+            return _components[type];
         }
 
         #endregion

@@ -37,6 +37,8 @@ namespace CMDR.DataSystem
             {
                 Type TNew = typeof(QueryBuilder<>).MakeGenericType(typeof(T));
 
+                object[] args = new object[] { (object)Data.GetComponentsCollectionReference(type) };
+
                 Queries.Add(query, Activator.CreateInstance(TNew) as IQueryBuilder);
 
                 if(_typeToQueryLookup.ContainsKey(type))
@@ -78,6 +80,18 @@ namespace CMDR.DataSystem
                     i++;
                 }
             }
+        }
+
+        public static bool GetQuery<T>(Query query, out Span<T> components)
+        {
+            bool isNotDone = _queries[query].GetQuery(out components);
+            
+            if(isNotDone == false)
+            {
+                _queries[query].Reset();
+            }
+
+            return isNotDone;
         }
 
         /// <summary>

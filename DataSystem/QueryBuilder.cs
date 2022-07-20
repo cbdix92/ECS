@@ -2,64 +2,44 @@ using System;
 
 namespace CMDR.DataSystem
 {
-    internal sealed class QueryBuilder<T> : IQueryBuilder<T> where T : struct, IComponent
+    internal sealed class QueryBuilder<T> : QueryList, IQueryBuilder<T> where T : struct, IComponent
     {
         #region PUBLIC_MEMBERS
-
-        public int Count { get; private set; }
-
-        public int Capacity { get; private set; }
-
-        public int SliceCount { get; private set; }
-
-        public int TotalComponents { get; private set; }
 
         #endregion
 
         #region PRIVATE_MEMBERS
 
-        private int[] _data;
-
-        private QueryList<T> _queryList;
+        private IComponentCollection _collection;
 
         #endregion
 
-        public QueryBuilder()
+        public QueryBuilder(IComponentCollection collection) : base()
         {
-            _data = new int[Data.StorageScale];
-
-            Capacity = _data.Length;
-
-            _queryList = new QueryList<T>();
+            _collection = collection;
         }
 
         #region PUBLIC_METHODS
 
-        public void OnAdd(int index)
+        public bool GetQuery(out Span<T> components)
         {
-            int pos = Math.Max(Count - 1, 0);
-
-            while (_data[pos] > index || _data[pos] == -1)
+            if(_nextSlice == SliceCount)
             {
-                pos--;
+                components = default;
+                _nextSlice = 0;
+                return false;
             }
-            
-            pos++;
-            
-            Insert(pos, index);
 
-            SliceCheck(pos);
-            
-        }
-
-        public void OnRemove(int index)
-        {
-
-        }
-
-        public void OnMove(int previousIndex, int newIndex)
-        {
-
+            if(_data[_nextSlice + 1] == -1)
+            {
+                components = new Span<T>(_collection, _nextSlice, _nextSlice + 2)
+                _nextSlice += 2;
+            }
+            else
+            {
+                components = new Span<T>(_collection, _nextSlice, _nextSlice);
+                _nextSlice++;
+            }
         }
 
         public QueryList<T> GetQueryList(IComponentCollection<IComponent> components)
@@ -92,44 +72,7 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_METHODS
 
-        private void SliceCheck(int newIndex)
-        {
-            // Check if number to the right is sequential
-            if (_data[newIndex] + 1 == _data[newIndex + 1])
-            {
-                // Right side is part of a slice.
-                if (_data[newIndex + 2] == -1)
-                {
-                    // Remove the right neighbor and shift the array left.
-                    for(int i = newIndex + 1; i < Count; i++)
-                    {
-                        _data[i] = _data[i + 1];
-                    }
-                }
-            }
-        }
 
-        public void Insert(int pos, int index)
-        {
-            // Check if storage is at capacity.
-            if(Count == Capacity)
-            {
-                Array.Resize<int>(ref _data, _data.Length + Data.StorageScale);
-            }
-
-            // Make room to insert the new index. 
-            if (pos != Count)
-            {
-                for (int i = Count; i >= pos; i--)
-                {
-                    _data[i + 1] = _data[i];
-                }
-            }
-
-            _data[pos] = index;
-
-            Count++;
-        }
 
         #endregion
     }
