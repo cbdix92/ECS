@@ -46,7 +46,9 @@ namespace CMDR.DataSystem
 
         public void OnRemove(int index)
         {
+            Remove(index);
 
+            SliceCheck(index);
         }
 
         public void OnMove(int previousIndexPosition, int newIndexPosition)

@@ -21,9 +21,9 @@ namespace CMDR
 
         #region PUBLIC_METHODS
 
-        public void DestroyGameObject(ID id)
+        public void DestroyGameObject(ref ID id)
         {
-            throw new NotImplementedException();
+            Data.DestroyGameObject(ref id);
         }
 
         public ID Populate(GameObjectBuilder gameObjectBuilder)
@@ -42,14 +42,14 @@ namespace CMDR
             throw new NotImplementedException();
         }
 
-        public T Get<T>(ID id) where T : struct, IComponent<T>
+        public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
         {
-            throw new NotImplementedException();
+            return Data.GetComponent(id, out component);
         }
 
-        public GameObject Get(ID id)
+        public bool GetGameObject(ID id, out GameObject gameObject)
         {
-            throw new NotImplementedException();
+            return Data.GetGameObject(id, out gameObject);
         }
 
         #endregion

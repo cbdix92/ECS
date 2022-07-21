@@ -115,7 +115,7 @@ namespace CMDR.DataSystem
             return _queries.Register<T>(filter);
         }
 
-        public static bool GetQuery<T>(Query query, out Span<T> components) where T : struct, IComponent
+        public static bool GetQuery(Query query, out Span<IComponent> components) where T : struct, IComponent
         {
             return _queries.GetQuery(query, out components);
         }
