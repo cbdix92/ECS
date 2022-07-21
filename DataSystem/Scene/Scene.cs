@@ -29,6 +29,7 @@ namespace CMDR
         public ID Populate(GameObjectBuilder gameObjectBuilder)
         {
             // Generate ID
+            ID id = Data.GenerateNewID();
 
             // Generate GameObject
 

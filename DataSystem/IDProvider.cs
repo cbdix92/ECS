@@ -56,11 +56,10 @@ namespace CMDR.DataSystem
         #region PUBLIC_METHODS
 
         /// <summary>
-        /// Generate a new unused GameObject ID for the provided GameObject. 
-        /// Bit 64 (Alive/Dead)
-        /// Bit 41 - 63 (Reserved)
-        /// Bit 25 - 40 (BatchID)
-        /// Bit 1 - 24 (GameObject ID)
+        /// Generate a new unused ID
+        /// Bit 41 - 64 (MetaData)
+        /// Bit 25 - 40 (Batch ID)
+        /// Bit 1 - 24 (Numeric ID)
         /// </summary>
         /// <returns> Creates a new ID that can be used for new GameObjects and Components. </returns>
         public ID GenerateID()

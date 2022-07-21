@@ -36,11 +36,11 @@ namespace CMDR.DataSystem
 
         private static Dictionary<Type, IComponentCollection<IComponent>> _components;
 
-        private static Queryable _queries = new Queryable();
+        private readonly static Queryable _queries = new Queryable();
 
         private readonly static Type[] _types;
 
-        private static IDProvider _idProvider;
+        private readonly static IDProvider _idProvider;
 
         #endregion
 
@@ -52,6 +52,11 @@ namespace CMDR.DataSystem
         }
 
         #region PUBLIC_METHODS
+
+        public static ID GenerateNewID()
+        {
+            return _idProvider.GenerateID();
+        }
 
         public static bool DestroyGameObject(ref ID id)
         {
