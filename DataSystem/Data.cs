@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace CMDR.DataSystem
 {
@@ -12,7 +13,7 @@ namespace CMDR.DataSystem
         
         public static readonly int StorageScale = byte.MaxValue;
 
-        public static int NumberOfComponentTypes { get; private set; }
+        public static int NumberOfComponentTypes { get => _types.Length - 1; }
 
         public static readonly ulong MetaDataMask = 0xffffffff00000000;
 
@@ -37,7 +38,7 @@ namespace CMDR.DataSystem
 
         private static Queryable _queries = new Queryable();
 
-        private readonly static IEnumerable _types;
+        private readonly static Type[] _types;
 
         private static IDProvider _idProvider;
 
@@ -45,7 +46,7 @@ namespace CMDR.DataSystem
 
         static Data()
         {
-            _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent)));
+            _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent))).ToArray();
 
             _idProvider = new IDProvider();
         }
@@ -66,9 +67,9 @@ namespace CMDR.DataSystem
             {
                 _components[t].Remove(id);
             }
-            
+
             // Remove Query entries
-            Queries.Remove(id);
+            _queries.Remove(id);
 
             // Remove GameObject
             _gameObjects.Remove(id);
@@ -112,11 +113,6 @@ namespace CMDR.DataSystem
         public static Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
         {
             return _queries.Register<T>(filter);
-        }
-
-        public static QueryList<T> GetQuery<T>(Query query) where T : struct, IComponent<T>
-        {
-            return _queries.GetQueryList<T>(query, _components[query.Type]);
         }
 
         public static bool GetQuery<T>(Query query, out Span<T> components) where T : struct, IComponent
@@ -180,17 +176,15 @@ namespace CMDR.DataSystem
 
                 Type TNew = TComponentCollection.MakeGenericType(TComponent);
 
-                object[] args = new object[] { (object)StorageScale, (object)Marshal.SizeOf(TComponent) };
+                object[] args = new object[] { StorageScale, Marshal.SizeOf(TComponent) };
 
                 _components[TComponent] = Activator.CreateInstance(TNew, args) as IComponentCollection;
-
-                NumberOfComponentTypes++;
             }
 
             return true;
         }
 
-        internal static IComponentCollection GetComponentsCollectionReference(Type type)
+        internal static IComponentCollection<IComponent> GetComponentsCollectionReference(Type type)
         {
             return _components[type];
         }

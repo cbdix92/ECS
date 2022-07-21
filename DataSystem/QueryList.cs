@@ -29,7 +29,7 @@ namespace CMDR.DataSystem
 
         public void OnAdd(int index)
         {
-            int pos = Math.Max(Count - 1, 0);
+            int pos = Math.Max(_count - 1, 0);
 
             while (_data[pos] > index || _data[pos] == -1)
             {

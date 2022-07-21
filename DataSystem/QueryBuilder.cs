@@ -21,7 +21,7 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
-        public bool GetQuery(out Span<T> components)
+        public bool GetQuery(out Span<IComponent> components)
         {
             if(_nextSlice == SliceCount)
             {
@@ -32,40 +32,16 @@ namespace CMDR.DataSystem
 
             if(_data[_nextSlice + 1] == -1)
             {
-                components = new Span<T>(_collection, _nextSlice, _nextSlice + 2)
+                components = new Span<IComponent>(_collection.ToArray(), _nextSlice, _nextSlice + 2);
                 _nextSlice += 2;
             }
             else
             {
-                components = new Span<T>(_collection, _nextSlice, _nextSlice);
+                components = new Span<IComponent>(_collection.ToArray(), _nextSlice, _nextSlice);
                 _nextSlice++;
             }
-        }
 
-        public QueryList<T> GetQueryList(IComponentCollection<IComponent> components)
-        {
-            _queryList.Build(components.Size * TotalComponents, SliceCount);
-
-            int i = 0;
-            while (i < _data.Length)
-            {
-                if (_data[i + 1] == -1)
-                {
-                    // Store a slice
-                    _queryList.Add(new Memory<IComponent>(components.ToArray(), _data[i], _data[i + 2]));
-
-                    i += 2;
-                }
-                else
-                {
-                    // Store a single
-                    _queryList.Add(new Memory<IComponent>(components.ToArray(), _data[i], _data[i]));
-
-                    i++;
-                }
-            }
-
-            return _queryList;
+            return true;
         }
 
         #endregion
@@ -85,7 +61,7 @@ namespace CMDR.DataSystem
 
         void OnMove(int previousIndex, int newIndex);
 
-        QueryList<T> GetQueryList(IComponentCollection<IComponent> components);
+        bool GetQuery(out Span<IComponent> components);
     }
 
     internal interface IQueryBuilder : IQueryBuilder<IComponent>
