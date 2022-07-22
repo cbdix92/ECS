@@ -53,39 +53,23 @@ namespace CMDR.DataSystem
             return query;
         }
 
-        
-
         public bool GetQuery(Query query, out Span<IComponent> components)
         {
             return Queries[query].GetQuery(out components);
         }
 
         /// <summary>
-        /// Remove all occurrences within the query system. 
-        /// </summary>
-        /// <param name="id"> The ID of the object that is being removed. </param>
-        public void Remove(ID id)
-        {
-            foreach(Query query in Queries.Keys)
-            {
-                if(Queries[query].Contains(id))
-                {
-                    Queries[query].Remove(id);
-                }
-            }
-        }
-
-        /// <summary>
         /// Sort a GameObject into the query system.
+        /// Note that the Components of the GameObject must be stored in the Data System prior to sorting.
         /// </summary>
         /// <param name="gameObject"> The GameObject that is to be sorted. </param>
-        public void Sort(GameObject gameObject)
+        public void Sort(GameObject gameObject, Dictionary<Type, IComponentCollection<IComponent>> components)
         {
             foreach(Query query in Queries.Keys)
             {
                 if (query.Sort(gameObject))
                 {
-                    Queries[query].Add(Data.Components[query.Type].Get(gameObject.ID));
+                    Queries[query].AddNew(gameObject.ID);
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private IComponentCollection _collection;
+        private readonly IComponentCollection _collection;
 
         #endregion
 
@@ -23,14 +23,14 @@ namespace CMDR.DataSystem
 
         public bool GetQuery(out Span<IComponent> components)
         {
-            if(_nextSlice == SliceCount)
+            if (_nextSlice == SliceCount)
             {
                 components = default;
                 _nextSlice = 0;
                 return false;
             }
 
-            if(_data[_nextSlice + 1] == -1)
+            if (_data[_nextSlice + 1] == -1)
             {
                 components = new Span<IComponent>(_collection.ToArray(), _nextSlice, _nextSlice + 2);
                 _nextSlice += 2;
@@ -44,22 +44,22 @@ namespace CMDR.DataSystem
             return true;
         }
 
-        #endregion
+        public void AddNew(ID id)
+        {
+            Add(_collection.GetIndex(id));
+        }
 
-        #region PRIVATE_METHODS
-
-
+        public bool Contains(ID id)
+        {
+            return _collection.Contains(id);
+        }
 
         #endregion
     }
 
     internal interface IQueryBuilder<T>
     {
-        void OnAdd(int index);
-
-        void OnRemove(int index);
-
-        void OnMove(int previousIndex, int newIndex);
+        void AddNew(ID id);
 
         bool GetQuery(out Span<IComponent> components);
     }

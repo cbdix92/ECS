@@ -2,3 +2,7 @@ C:\Users\cbdix\Desktop\DataSystem\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.
 C:\Users\cbdix\Desktop\DataSystem\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.AssemblyInfoInputs.cache
 C:\Users\cbdix\Desktop\DataSystem\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.AssemblyInfo.cs
 C:\Users\cbdix\Desktop\DataSystem\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.csproj.CoreCompileInputs.cache
+C:\Users\cbdix\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.csprojAssemblyReference.cache
+C:\Users\cbdix\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.AssemblyInfoInputs.cache
+C:\Users\cbdix\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.AssemblyInfo.cs
+C:\Users\cbdix\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.csproj.CoreCompileInputs.cache

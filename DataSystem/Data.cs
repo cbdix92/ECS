@@ -73,9 +73,6 @@ namespace CMDR.DataSystem
                 _components[t].Remove(id);
             }
 
-            // Remove Query entries
-            _queries.Remove(id);
-
             // Remove GameObject
             _gameObjects.Remove(id);
             
@@ -120,7 +117,7 @@ namespace CMDR.DataSystem
             return _queries.Register<T>(filter);
         }
 
-        public static bool GetQuery(Query query, out Span<IComponent> components) where T : struct, IComponent
+        public static bool GetQuery(Query query, out Span<IComponent> components)
         {
             return _queries.GetQuery(query, out components);
         }

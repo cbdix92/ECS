@@ -4,6 +4,25 @@ namespace CMDR.DataSystem
 {
     public abstract class QueryList
     {
+        protected struct Slice
+        {
+            public readonly int Start;
+
+            public readonly int End;
+
+            public Slice(int start, int end) => (Start, End) = (start, end);
+
+            public bool Contains(int index)
+            {
+                return (index >= Start) && (index <= End);
+            }
+
+            public static Slice operator +(Slice left, Slice right)
+            {
+                return new Slice(Math.Min(left.Start, right.Start), Math.Max(left.End, right.End));
+            }
+        }
+
         #region PUBLIC_MEMBERS
 
         public int SliceCount { get; private set; }
@@ -14,7 +33,7 @@ namespace CMDR.DataSystem
 
         protected int _nextSlice;
 
-        protected int[] _data;
+        protected Slice[] _data;
 
         private int _count;
 
@@ -22,117 +41,61 @@ namespace CMDR.DataSystem
 
         public QueryList()
         {
-            _data = new int[Data.StorageScale];
+            _data = new Slice[Data.StorageScale];
         }
 
         #region PUBLIC_METHODS
 
-        public void OnAdd(int index)
-        {
-            int pos = Math.Max(_count - 1, 0);
-
-            while (_data[pos] > index || _data[pos] == -1)
-            {
-                pos--;
-            }
-            
-            pos++;
-            
-            Insert(pos, index);
-
-            SliceCheck(pos);
-            
-        }
-
-        public void OnRemove(int index)
-        {
-            Remove(index);
-
-            SliceCheck(index);
-        }
-
-        public void OnMove(int previousIndexPosition, int newIndexPosition)
-        {
-
-        }
+        
 
         #endregion
 
         #region PRIVATE_METHODS
 
-        private void SliceCheck(int newIndexPosition)
+        protected void Add(int index)
         {
-            if (RightIsSequential(newIndexPosition) && RightIsSlice(newIndexPosition))
-            {
-                // Remove the right neighbor
-                Remove(newIndexPosition + 1);
+            int pos = Math.Max(_count - 1, 0);
 
-                return;
+            while (index < _data[pos].Start)
+            {
+                pos--;
             }
 
-            if (LeftIsSequential(newIndexPosition) && LeftIsSlice(newIndexPosition))
-            {
-                // Remove the left neighbor
-                Remove(newIndexPosition - 1);
-                
-                return;
-            }
+            pos++;
 
-            if (RightIsSequential(newIndexPosition) && LeftIsNeagtiveOne(newIndexPosition))
-            {
-                Remove(newIndexPosition);
-                
-                return;
-            }
+            Insert(pos, index);
 
-            if (LeftIsSequential(newIndexPosition) && RightIsNegativeOne(newIndexPosition))
-            {
-                Remove(newIndexPosition);
-                
-                return;
-            }
-
+            SliceCheck(pos);
 
         }
-
-        private int CheckRight(int pos)
+        private void SliceCheck(int newSlicePosition)
         {
-            return _data[pos + 1];
-        }
-
-        private int CheckLeft(int pos)
-        {
-            return _data[pos - 1];
+            if (RightIsSequential(newSlicePosition))
+            {
+                Combine(newSlicePosition, newSlicePosition + 1);
+            }
+            
+            if (LeftIsSequential(newSlicePosition))
+            {
+                Combine(newSlicePosition - 1, newSlicePosition);
+            }
         }
 
         private bool RightIsSequential(int pos)
         {
-            return _data[pos] + 1 == CheckRight(pos);
+            return _data[pos].End == _data[pos + 1].Start + 1;
         }
 
         private bool LeftIsSequential(int pos)
         {
-            return _data[pos] - 1 == CheckLeft(pos);
+            return _data[pos].Start == _data[pos - 1].End - 1;
         }
 
-        private bool RightIsSlice(int pos)
+        private void Combine(int pos1, int pos2)
         {
-            return _data[pos + 2] == -1;
-        }
-
-        private bool LeftIsSlice(int pos)
-        {
-            return _data[pos - 2] == -1;
-        }
-
-        private bool RightIsNegativeOne(int pos)
-        {
-            return _data[pos + 1] == -1;
-        }
-
-        private bool LeftIsNeagtiveOne(int pos)
-        {
-            return _data[pos - 1] == -1;
+            _data[pos1] = _data[pos1] + _data[pos2];
+            
+            Remove(pos2);
         }
 
         private void Insert(int pos, int index)
@@ -140,7 +103,7 @@ namespace CMDR.DataSystem
             // Check if storage is at capacity.
             if(_count == _data.Length)
             {
-                Array.Resize<int>(ref _data, _data.Length + Data.StorageScale);
+                Array.Resize(ref _data, _data.Length + Data.StorageScale);
             }
 
             // Make room to insert the new index. 
@@ -152,7 +115,7 @@ namespace CMDR.DataSystem
                 }
             }
 
-            _data[pos] = index;
+            _data[pos] = new Slice(index, index);
 
             _count++;
         }

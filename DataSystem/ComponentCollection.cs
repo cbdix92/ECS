@@ -41,9 +41,9 @@ namespace CMDR
 
         private T[] _components;
 
-        private Dictionary<ID, int> _idToIndexLookUp;
+        private readonly Dictionary<ID, int> _idToIndexLookUp;
 
-        private static ArrayPool<int> _countPool = ArrayPool<int>.Create();
+        private readonly static ArrayPool<int> _countPool = ArrayPool<int>.Create();
 
         #endregion
 
