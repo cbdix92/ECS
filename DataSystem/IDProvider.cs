@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CMDR.DataSystem
 {
-    internal sealed class IDProvider
+    internal class IDProvider
     {
         #region PUBLIC_MEMBERS
 

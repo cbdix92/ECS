@@ -6,20 +6,17 @@ using System.Runtime.InteropServices;
 
 namespace CMDR.DataSystem
 {
-    public class Data
+    public sealed class Data : Queryable, IDProvider
     {
         #region PUBLIC_MEMBERS
         
         public static readonly int StorageScale = byte.MaxValue;
 
-        public static int NumberOfComponentTypes { get => _types.Length - 1; }
+        public int NumberOfComponentTypes { get => _types.Length - 1; }
 
-        public static readonly ulong MetaDataMask = 0xffffffff00000000;
+        public readonly ulong MetaDataMask = 0xffffffff00000000;
 
-        public static readonly uint IDMask = 0xffffffff;
-
-        // GenerateComponentStorage needs to be called from a static field to insure that component storage is created prior to static constructors
-        public static readonly bool Initialized = GenerateComponentStorage();
+        public readonly uint IDMask = 0xffffffff;
 
         #endregion
 
@@ -47,17 +44,35 @@ namespace CMDR.DataSystem
         {
             _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent))).ToArray();
 
+            _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
+
+            _components = new Dictionary<Type, IComponentCollection<IComponent>>(_types.Length - 1);
+
+            Type TComponentCollection = typeof(ComponentCollection<>);
+
+            foreach (Type TComponent in _types)
+            {
+                if (TComponent.Name == typeof(IComponent<>).Name)
+                    continue;
+
+                Type TNew = TComponentCollection.MakeGenericType(TComponent);
+
+                object[] args = new object[] { StorageScale, Marshal.SizeOf(TComponent) };
+
+                _components[TComponent] = Activator.CreateInstance(TNew, args) as IComponentCollection;
+            }
+
             _idProvider = new IDProvider();
         }
 
         #region PUBLIC_METHODS
 
-        public static ID GenerateNewID()
+        public ID GenerateNewID()
         {
             return _idProvider.GenerateID();
         }
 
-        public static bool DestroyGameObject(ref ID id)
+        public bool DestroyGameObject(ref ID id)
         {
             if(_gameObjects.ContainsKey(id) == false)
             {
@@ -81,7 +96,7 @@ namespace CMDR.DataSystem
             return true;
         }
 
-        public static bool GetGameObject(ID id, out GameObject gameObject)
+        public bool GetGameObject(ID id, out GameObject gameObject)
         {
             if(_gameObjects.ContainsKey(id))
             {
@@ -95,7 +110,7 @@ namespace CMDR.DataSystem
             return false;
         }
         
-        public static bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
+        public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
         {
             Type tComp = typeof(T);
 
@@ -111,12 +126,12 @@ namespace CMDR.DataSystem
             return false;
         }
 
-        public static Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
+        public Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
         {
             return _queries.Register<T>(filter);
         }
 
-        public static bool GetQuery(Query query, out Span<IComponent> components)
+        public bool GetQuery(Query query, out Span<IComponent> components)
         {
             return _queries.GetQuery(query, out components);
         }
@@ -126,7 +141,7 @@ namespace CMDR.DataSystem
         /// </summary>
         /// <param name="gameObject"> The GameObject that is to be updated. </param>
         /// <returns> Return True if the GameObject was updated, otherwise returns False. </returns>
-        public static bool Update(GameObject gameObject)
+        public bool Update(GameObject gameObject)
         {
             if(_gameObjects.ContainsKey(gameObject.ID))
             {
@@ -144,7 +159,7 @@ namespace CMDR.DataSystem
         /// <typeparam name="T"> Type of IComponent. </typeparam>
         /// <param name="component"> The Component that is to be updated. </param>
         /// <returns> Returns True if the Component was updated, otherwise returns False. </returns>
-        public static bool Update<T>(T component) where T : struct, IComponent<T>
+        public bool Update<T>(T component) where T : struct, IComponent<T>
         {
             Type tComp = typeof(T);
 
@@ -161,31 +176,8 @@ namespace CMDR.DataSystem
         #endregion
 
         #region INTERNAL_METHODS
-        
-        internal static bool GenerateComponentStorage()
-        {
-            _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
 
-            _components = new Dictionary<Type, IComponentCollection<IComponent>>(_types.Length - 1);
-
-            Type TComponentCollection = typeof(ComponentCollection<>);
-
-            foreach(Type TComponent in _types)
-            {
-                if(TComponent.Name == typeof(IComponent<>).Name)
-                    continue;
-
-                Type TNew = TComponentCollection.MakeGenericType(TComponent);
-
-                object[] args = new object[] { StorageScale, Marshal.SizeOf(TComponent) };
-
-                _components[TComponent] = Activator.CreateInstance(TNew, args) as IComponentCollection;
-            }
-
-            return true;
-        }
-
-        internal static IComponentCollection<IComponent> GetComponentsCollectionReference(Type type)
+        internal IComponentCollection<IComponent> GetComponentsCollectionReference(Type type)
         {
             return _components[type];
         }

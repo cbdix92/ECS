@@ -10,12 +10,16 @@ namespace CMDR
         #region PUBLIC_MEMBERS
 
         public int ID { get; internal set; }
-        
+
         #endregion
+
+        internal Data Data;
 
 
         public Scene()
         {
+            Data = new Data();
+
             SceneManager.LoadScene(this);
         }
 

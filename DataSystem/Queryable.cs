@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CMDR.DataSystem
 {
-    internal sealed class Queryable
+    public class Queryable
     {
         
         #region PUBLIC_MEMBERS
