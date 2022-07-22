@@ -10,13 +10,13 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private readonly IComponentCollection _collection;
+        private readonly IComponentCollection<T> _collection;
 
         #endregion
 
-        public QueryBuilder(IComponentCollection collection) : base()
+        public QueryBuilder(IComponentCollection<IComponent> collection) : base()
         {
-            _collection = collection;
+            _collection = collection as IComponentCollection<T>;
         }
 
         #region PUBLIC_METHODS
