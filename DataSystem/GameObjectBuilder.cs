@@ -20,17 +20,22 @@ namespace CMDR
             }
         }
 
+        public Type[] ComponentTypes { get => _componentTypes; }
+
         #endregion
 
         #region PRIVATE_MEMBERS
 
         private Dictionary<Type, IComponent> _children;
 
+        private Type[] _componentTypes;
+
         #endregion
 
         public GameObjectBuilder()
         {
             _children = new Dictionary<Type, IComponent>(Data.NumberOfComponentTypes);
+            _componentTypes = new Type[1];
         }
 
         #region PUBLIC_METHODS
@@ -64,6 +69,10 @@ namespace CMDR
                 _children[tComp] = component;
                 return;
             }
+
+            Array.Resize(ref _componentTypes, _componentTypes.Length + 1);
+
+            _componentTypes[^1] = tComp;
 
             _children.Add(tComp, component);
         }

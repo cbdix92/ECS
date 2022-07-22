@@ -1,13 +1,12 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace CMDR.DataSystem
 {
-    public static class Data
+    public class Data
     {
         #region PUBLIC_MEMBERS
         

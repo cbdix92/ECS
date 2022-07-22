@@ -32,8 +32,10 @@ namespace CMDR
             ID id = Data.GenerateNewID();
 
             // Generate GameObject
+            GameObject gameObject = new GameObject(this, id, gameObjectBuilder.ComponentTypes);
 
             // Store Components
+
             // Store GameObject
 
             // Sort GameObject
