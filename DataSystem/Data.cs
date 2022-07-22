@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace CMDR.DataSystem
 {
-    public sealed class Data : Queryable, IDProvider
+    public sealed class Data : Queryable
     {
         #region PUBLIC_MEMBERS
         
@@ -14,15 +14,11 @@ namespace CMDR.DataSystem
 
         public int NumberOfComponentTypes { get => _types.Length - 1; }
 
-        public readonly ulong MetaDataMask = 0xffffffff00000000;
-
-        public readonly uint IDMask = 0xffffffff;
-
         #endregion
 
         #region INTERNAL_MEMBERS
 
-        internal static int GetMaxIDBitPosition => _idProvider.GetMaxIDBitPosition();
+        internal int GetMaxIDBitPosition => _idProvider.GetMaxIDBitPosition();
 
         #endregion
 
@@ -32,21 +28,21 @@ namespace CMDR.DataSystem
 
         private static Dictionary<Type, IComponentCollection<IComponent>> _components;
 
-        private readonly static Queryable _queries = new Queryable();
+        private readonly Type[] _types;
 
-        private readonly static Type[] _types;
-
-        private readonly static IDProvider _idProvider;
+        private readonly IDProvider _idProvider;
 
         #endregion
 
-        static Data()
+        public Data()
         {
             _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent))).ToArray();
 
             _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
 
             _components = new Dictionary<Type, IComponentCollection<IComponent>>(_types.Length - 1);
+
+            _idProvider = new IDProvider();
 
             Type TComponentCollection = typeof(ComponentCollection<>);
 
@@ -62,7 +58,8 @@ namespace CMDR.DataSystem
                 _components[TComponent] = Activator.CreateInstance(TNew, args) as IComponentCollection;
             }
 
-            _idProvider = new IDProvider();
+            base(_components);
+
         }
 
         #region PUBLIC_METHODS
@@ -124,16 +121,6 @@ namespace CMDR.DataSystem
             component = default;
 
             return false;
-        }
-
-        public Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
-        {
-            return _queries.Register<T>(filter);
-        }
-
-        public bool GetQuery(Query query, out Span<IComponent> components)
-        {
-            return _queries.GetQuery(query, out components);
         }
 
         /// <summary>

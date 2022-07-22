@@ -9,6 +9,8 @@ namespace CMDR
     {
         #region PUBLIC_MEMBERS
 
+        public static Scene Active { get; private set; }
+
         public int ID { get; internal set; }
 
         #endregion
@@ -19,6 +21,11 @@ namespace CMDR
         public Scene()
         {
             Data = new Data();
+
+            if (Active == null)
+            {
+                Active = this;
+            }
 
             SceneManager.LoadScene(this);
         }

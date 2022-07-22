@@ -14,20 +14,23 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private Dictionary<Type, Query[]> _typeToQueryLookup;
+        private readonly Dictionary<Type, Query[]> _typeToQueryLookup;
 
+        private readonly Dictionary<Type, IComponentCollection<IComponent>> _componentsRef;
         #endregion
 
-        public Queryable()
+        protected private Queryable(Dictionary<Type, IComponentCollection<IComponent>> components)
         {
             Queries = new Dictionary<Query, IQueryBuilder<IComponent>>();
 
             _typeToQueryLookup = new Dictionary<Type, Query[]>();
+
+            _componentsRef = components;
         }
 
         #region PUBLIC_METHODS
 
-        public Query Register<T>(Filter filter) where T : struct, IComponent<T>
+        public Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
         {
             Type type = typeof(T);
 
@@ -37,7 +40,7 @@ namespace CMDR.DataSystem
             {
                 Type TNew = typeof(QueryBuilder<>).MakeGenericType(typeof(T));
 
-                object[] args = new object[] { (object)Data.GetComponentsCollectionReference(type) };
+                object[] args = new object[] { (object)_componentsRef[type] };
 
                 Queries.Add(query, Activator.CreateInstance(TNew) as IQueryBuilder);
 
