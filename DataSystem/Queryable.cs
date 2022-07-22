@@ -16,16 +16,14 @@ namespace CMDR.DataSystem
 
         private readonly Dictionary<Type, Query[]> _typeToQueryLookup;
 
-        private readonly Dictionary<Type, IComponentCollection<IComponent>> _componentsRef;
+        protected private Dictionary<Type, IComponentCollection<IComponent>> _componentsQueryRef;
         #endregion
 
-        protected private Queryable(Dictionary<Type, IComponentCollection<IComponent>> components)
+        protected private Queryable()
         {
             Queries = new Dictionary<Query, IQueryBuilder<IComponent>>();
 
             _typeToQueryLookup = new Dictionary<Type, Query[]>();
-
-            _componentsRef = components;
         }
 
         #region PUBLIC_METHODS
@@ -40,9 +38,9 @@ namespace CMDR.DataSystem
             {
                 Type TNew = typeof(QueryBuilder<>).MakeGenericType(typeof(T));
 
-                object[] args = new object[] { (object)_componentsRef[type] };
+                object[] args = new object[] { _componentsQueryRef[type] };
 
-                Queries.Add(query, Activator.CreateInstance(TNew) as IQueryBuilder);
+                Queries.Add(query, Activator.CreateInstance(TNew, args) as IQueryBuilder);
 
                 if(_typeToQueryLookup.ContainsKey(type))
                 {
@@ -50,7 +48,7 @@ namespace CMDR.DataSystem
                     Array.Resize<Query>(ref array, _typeToQueryLookup[type].Length + 1);
                 }
 
-                _typeToQueryLookup[type][_typeToQueryLookup[type].Length - 1] = query;
+                _typeToQueryLookup[type][^1] = query;
             }
 
             return query;
@@ -66,13 +64,20 @@ namespace CMDR.DataSystem
         /// Note that the Components of the GameObject must be stored in the Data System prior to sorting.
         /// </summary>
         /// <param name="gameObject"> The GameObject that is to be sorted. </param>
-        public void Sort(GameObject gameObject, Dictionary<Type, IComponentCollection<IComponent>> components)
+        public void Sort(GameObject gameObject)
         {
-            foreach(Query query in Queries.Keys)
+            ReadOnlySpan<Type> gameObjectTypes = gameObject.Components.AsSpan();
+
+            for (int i = 0; i < gameObjectTypes.Length - 1; i++)
             {
-                if (query.Sort(gameObject))
+                ReadOnlySpan<Query> queriesByType = _typeToQueryLookup[gameObjectTypes[i]].AsSpan();
+                
+                for (int j = 0; j < queriesByType.Length - 1; j++)
                 {
-                    Queries[query].AddNew(gameObject.ID);
+                    if (queriesByType[j].Sort(gameObject))
+                    {
+                        Queries[queriesByType[j]].AddNew(gameObject.ID);
+                    }
                 }
             }
         }

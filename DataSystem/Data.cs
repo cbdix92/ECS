@@ -34,13 +34,17 @@ namespace CMDR.DataSystem
 
         #endregion
 
-        public Data()
+        public Data() : base()
         {
             _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent))).ToArray();
 
             _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
 
             _components = new Dictionary<Type, IComponentCollection<IComponent>>(_types.Length - 1);
+
+#pragma warning disable
+            base._componentsQueryRef = _components;
+#pragma warning enable
 
             _idProvider = new IDProvider();
 
@@ -57,8 +61,6 @@ namespace CMDR.DataSystem
 
                 _components[TComponent] = Activator.CreateInstance(TNew, args) as IComponentCollection;
             }
-
-            base(_components);
 
         }
 

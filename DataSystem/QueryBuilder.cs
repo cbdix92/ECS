@@ -21,7 +21,7 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
-        public bool GetQuery(out Span<IComponent> components)
+        public bool GetQuery(out Span<T> components)
         {
             if (_nextSlice == SliceCount)
             {
@@ -30,7 +30,7 @@ namespace CMDR.DataSystem
                 return false;
             }
 
-            components = new Span<IComponent>(_collection.ToArray(), _data[_nextSlice].Start, _data[_nextSlice].End);
+            components = new Span<T>(_collection.ToArray(), _data[_nextSlice].Start, _data[_nextSlice].End);
             _nextSlice++;
 
             return true;
@@ -53,7 +53,7 @@ namespace CMDR.DataSystem
     {
         void AddNew(ID id);
 
-        bool GetQuery(out Span<IComponent> components);
+        bool GetQuery(out Span<T> components);
     }
 
     internal interface IQueryBuilder : IQueryBuilder<IComponent>

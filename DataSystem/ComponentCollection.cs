@@ -134,10 +134,11 @@ namespace CMDR
         /// <summary>
         /// Sort the Components by the ID in ascending order using base16 Radix sort.
         /// </summary>
-        public void SortComponents()
+        /// <param name="maxBitPos"> The max bit position for generated IDs. </param>
+        public void SortComponents(int maxBitPos)
         {
             // Sort components with Base16 Radix sort.
-            _components = InternalSortComponents(Data.GetMaxIDBitPosition, 0, 0xf, GetSpan(), new Span<T>(new T[_components.Length])).ToArray();
+            _components = InternalSortComponents(maxBitPos, 0, 0xf, GetSpan(), new Span<T>(new T[_components.Length])).ToArray();
 
             // Rebuild the ID lookup to reflect the changes.
             for(int i = 0; i < _count; i++)
