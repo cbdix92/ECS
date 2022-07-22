@@ -30,16 +30,8 @@ namespace CMDR.DataSystem
                 return false;
             }
 
-            if (_data[_nextSlice + 1] == -1)
-            {
-                components = new Span<IComponent>(_collection.ToArray(), _nextSlice, _nextSlice + 2);
-                _nextSlice += 2;
-            }
-            else
-            {
-                components = new Span<IComponent>(_collection.ToArray(), _nextSlice, _nextSlice);
-                _nextSlice++;
-            }
+            components = new Span<IComponent>(_collection.ToArray(), _data[_nextSlice].Start, _data[_nextSlice].End);
+            _nextSlice++;
 
             return true;
         }

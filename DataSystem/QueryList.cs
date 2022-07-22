@@ -25,7 +25,7 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_MEMBERS
 
-        public int SliceCount { get; private set; }
+        public int SliceCount { get => _count; }
 
         #endregion
 
