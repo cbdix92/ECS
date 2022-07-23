@@ -6,13 +6,13 @@ using System.Runtime.InteropServices;
 
 namespace CMDR.DataSystem
 {
-    public sealed class Data : Queryable
+    internal sealed class Data : Queryable
     {
         #region PUBLIC_MEMBERS
         
         public static readonly int StorageScale = byte.MaxValue;
 
-        public int NumberOfComponentTypes { get => _types.Length - 1; }
+        public static int NumberOfComponentTypes { get => _types.Length - 1; }
 
         #endregion
 
@@ -24,11 +24,11 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private static Dictionary<ID, GameObject> _gameObjects;
+        private Dictionary<ID, GameObject> _gameObjects;
 
-        private static Dictionary<Type, IComponentCollection<IComponent>> _components;
+        private Dictionary<Type, IComponentCollection<IComponent>> _components;
 
-        private readonly Type[] _types;
+        private static Type[] _types;
 
         private readonly IDProvider _idProvider;
 
@@ -70,6 +70,10 @@ namespace CMDR.DataSystem
         {
             return _idProvider.GenerateID();
         }
+
+        public void StoreComponent(Type type, IComponent component) => _components[type].Add(component);
+
+        public void StoreGameObject(GameObject gameObject) => _gameObjects.Add(gameObject.ID, gameObject);
 
         public bool DestroyGameObject(ref ID id)
         {
@@ -160,15 +164,6 @@ namespace CMDR.DataSystem
             }
 
             return false;
-        }
-
-        #endregion
-
-        #region INTERNAL_METHODS
-
-        internal IComponentCollection<IComponent> GetComponentsCollectionReference(Type type)
-        {
-            return _components[type];
         }
 
         #endregion

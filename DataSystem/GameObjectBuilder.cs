@@ -28,6 +28,8 @@ namespace CMDR
 
         private Dictionary<Type, IComponent> _children;
 
+        private IComponent[] _components;
+
         private Type[] _componentTypes;
 
         #endregion
@@ -35,6 +37,7 @@ namespace CMDR
         public GameObjectBuilder()
         {
             _children = new Dictionary<Type, IComponent>(Data.NumberOfComponentTypes);
+            _components = new IComponent[1];
             _componentTypes = new Type[1];
         }
 
@@ -102,6 +105,13 @@ namespace CMDR
         }
 
         #endregion
+
+        internal void GetComponents(out Type[] types, out IComponent[] components)
+        {
+            types = _componentTypes;
+
+            components = _components;
+        }
 
     }
 }

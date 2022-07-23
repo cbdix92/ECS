@@ -26,8 +26,6 @@ namespace CMDR
             {
                 Active = this;
             }
-
-            SceneManager.LoadScene(this);
         }
 
         #region PUBLIC_METHODS
@@ -46,14 +44,23 @@ namespace CMDR
             GameObject gameObject = new GameObject(this, id, gameObjectBuilder.ComponentTypes);
 
             // Store Components
+            gameObjectBuilder.GetComponents(out Type[] types, out IComponent[] components);
+
+            for(int i = 0; i < types.Length - 1; i++)
+            {
+                components[i].ID = new ID(components[i].ID | id.BaseID);
+
+                Data.StoreComponent(types[i], components[i]);
+            }
 
             // Store GameObject
+            Data.StoreGameObject(gameObject);
 
             // Sort GameObject
-
+            Data.Sort(gameObject);
 
             // Return Generated ID
-            throw new NotImplementedException();
+            return id;
         }
 
         public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
