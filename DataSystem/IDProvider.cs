@@ -7,10 +7,6 @@ namespace CMDR.DataSystem
     {
         #region PUBLIC_MEMBERS
 
-        public static readonly ulong MetaDataMask = 0xffffffff00000000;
-
-        public static readonly uint IDMask = 0xffffffff;
-
         /// <summary>
         /// Provides an unused GameObject ID.
         /// </summary>

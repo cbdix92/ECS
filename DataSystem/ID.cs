@@ -103,6 +103,12 @@ namespace CMDR
         }
 
         #endregion
+
+        #region INTERNAL_METHODS
+
+        internal void InlayID(ulong id) => _id |= id;
+
+        #endregion
     }
 
 }

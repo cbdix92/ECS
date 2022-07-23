@@ -66,11 +66,11 @@ namespace CMDR.DataSystem
         /// <param name="gameObject"> The GameObject that is to be sorted. </param>
         public void Sort(GameObject gameObject)
         {
-            ReadOnlySpan<Type> gameObjectTypes = gameObject.Components.AsSpan();
+            Type[] componentTypes = gameObject.Components;
 
-            for (int i = 0; i < gameObjectTypes.Length - 1; i++)
+            for (int i = 0; i < componentTypes.Length - 1; i++)
             {
-                ReadOnlySpan<Query> queriesByType = _typeToQueryLookup[gameObjectTypes[i]].AsSpan();
+                Query[] queriesByType = _typeToQueryLookup[gameObjectTypes[i]];
                 
                 for (int j = 0; j < queriesByType.Length - 1; j++)
                 {

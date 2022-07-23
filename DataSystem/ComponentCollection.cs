@@ -71,6 +71,8 @@ namespace CMDR
             }
 
             _components[_count++] = component;
+
+            _idToIndexLookUp.Add(_components[^1].ID, _components.Length - 1);
         }
 
         public void AddRange(T[] components)

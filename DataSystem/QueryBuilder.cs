@@ -31,6 +31,7 @@ namespace CMDR.DataSystem
             }
 
             components = new Span<T>(_collection.ToArray(), _data[_nextSlice].Start, _data[_nextSlice].End);
+            
             _nextSlice++;
 
             return true;
