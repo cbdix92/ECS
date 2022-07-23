@@ -48,7 +48,7 @@ namespace CMDR
 
             for(int i = 0; i < types.Length - 1; i++)
             {
-                components[i].ID = new ID(components[i].ID | id.BaseID);
+                components[i].ID.InlayID(id.Id);
 
                 Data.StoreComponent(types[i], components[i]);
             }

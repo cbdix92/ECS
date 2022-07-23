@@ -106,7 +106,11 @@ namespace CMDR
 
         #region INTERNAL_METHODS
 
-        internal void InlayID(ulong id) => _id |= id;
+        /// <summary>
+        /// Inlay a new base ID and Batch ID. Used to initialize a components ID without disturbing Meta Data.
+        /// </summary>
+        /// <param name="id"> A base ID with Batch ID. </param>
+        internal void InlayID(ulong id) => _id |= (id | (_id | _metaDataMask));
 
         #endregion
     }

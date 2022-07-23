@@ -106,16 +106,31 @@ namespace CMDR
 
         public void Remove(T component)
         {
-            RemoveAt(GetIndex(component));
+            int index = GetIndex(component);
+            
+            if(index == -1)
+            {
+                return;
+            }
+
+            RemoveAt(index);
         }
 
         public void Remove(ID id)
         {
-            RemoveAt(GetIndex(id));
+            int index = GetIndex(id);
+
+            if (index == -1)
+            {
+                return;
+            }
+
+            RemoveAt(index);
         }
 
         public void RemoveAt(int index)
         {
+
             // Remove components ID lookup.
             _idToIndexLookUp.Remove(_components[index].ID);
             

@@ -46,6 +46,35 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
+        OnComponentMoved(int previousIndex, int newIndex)
+        {
+            // Check if this QueryList contains previousIndex
+            if(Contains(previousIndex) == false)
+            {
+                return;
+            }
+
+            // If so, remove it and add newIndex
+            Remove(previousIndex);
+
+            Add(newIndex);
+        }
+
+        OnComponentDestroyed(int index)
+        {
+            // Check if this QueryList contains index
+            if(Contains(index) == false)
+            {
+                return;
+            }
+
+            // If so, remove it.
+            int pos = FindPosition(index);
+
+            Remove(index);
+
+            SliceCheck(pos);
+        }
         
 
         #endregion
@@ -53,6 +82,32 @@ namespace CMDR.DataSystem
         #region PRIVATE_METHODS
 
         protected void Add(int index)
+        {
+            int pos = FindPosition(index);
+
+            Insert(pos, index);
+
+            SliceCheck(pos);
+
+        }
+
+        private bool Contains(int index)
+        {
+            for(int i = 0; i < _data.Length - 1; i++)
+            {
+
+            }
+            return false;
+        }
+
+        private bool BinarySearch(int index, int low, int high)
+        {
+            int mid = low + high / 2;
+
+            if (_data[mid].Start)
+        }
+
+        private int FindPosition(int index)
         {
             int pos = Math.Max(_count - 1, 0);
 
@@ -63,11 +118,9 @@ namespace CMDR.DataSystem
 
             pos++;
 
-            Insert(pos, index);
-
-            SliceCheck(pos);
-
+            return pos;
         }
+
         private void SliceCheck(int newSlicePosition)
         {
             if (RightIsSequential(newSlicePosition))
