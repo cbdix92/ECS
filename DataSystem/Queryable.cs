@@ -28,7 +28,7 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
-        public Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
+        public virtual Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
         {
             Type type = typeof(T);
 

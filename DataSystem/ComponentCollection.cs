@@ -5,11 +5,18 @@ using System.Buffers;
 
 namespace CMDR
 {
+    internal delegate void OnComponentDestroyedHandler(int index);
+    internal delegate void OnComponentMovedHandler(int previousIndex, int newIndex);
+    
     internal class ComponentCollection<T> : IComponentCollection<T> where T : struct, IComponent
     {
 
         #region PUBLIC_MEMBERS
 
+        public event OnComponentDestroyedHandler ComponentDestroyedEvent;
+        
+        public event OnComponentMovedHandler ComponentMovedEvent;
+        
         public int Count { get => _count; }
 
         public int Capacity { get => _capacity; }
@@ -138,6 +145,9 @@ namespace CMDR
             if(index == --_count)
             {
                 _components[_count] = default;
+
+                ComponentDestroyedEvent?.Invoke(index);
+                
                 return;
             }
 
@@ -146,6 +156,11 @@ namespace CMDR
 
             // Change ID lookup to reflect the changes.
             _idToIndexLookUp[_components[index].ID] = index;
+
+            ComponentDestroyedEvent?.Invoke(index);
+
+            ComponentMovedEvent?.Invoke(_count, index);
+
         }
 
         /// <summary>
@@ -226,6 +241,10 @@ namespace CMDR
 
     internal interface IComponentCollection<T>
     {
+        public event OnComponentDestroyedHandler ComponentDestroyedEvent;
+
+        public event OnComponentMovedHandler ComponentMovedEvent;
+
         int Count { get; }
 
         int Size { get; }

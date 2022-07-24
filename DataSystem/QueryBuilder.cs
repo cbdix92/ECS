@@ -54,6 +54,10 @@ namespace CMDR.DataSystem
 
     internal interface IQueryBuilder<T>
     {
+        void OnComponentMoved(int previousIndex, int newIndex);
+
+        void OnComponentDestroyed(int index);
+
         void AddNew(ID id);
 
         bool GetQuery(out Span<T> components);

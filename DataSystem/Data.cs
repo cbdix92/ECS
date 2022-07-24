@@ -71,6 +71,18 @@ namespace CMDR.DataSystem
             return _idProvider.GenerateID();
         }
 
+        public override Query RegisterQuery<T>(Filter filter)
+        {
+            Query query = base.RegisterQuery<T>(filter);
+
+            // Subscribe QueryList to Component Collection events.
+            Type tComp = typeof(T);
+            _components[tComp].ComponentDestroyedEvent += Queries[query].OnComponentDestroyed;
+            _components[tComp].ComponentMovedEvent += Queries[query].OnComponentMoved;
+
+            return query;
+        }
+
         public void StoreComponent(Type type, IComponent component) => _components[type].Add(component);
 
         public void StoreGameObject(GameObject gameObject) => _gameObjects.Add(gameObject.ID, gameObject);

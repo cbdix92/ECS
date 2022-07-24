@@ -46,7 +46,7 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
-        OnComponentMoved(int previousIndex, int newIndex)
+        public void OnComponentMoved(int previousIndex, int newIndex)
         {
             // Check if this QueryList contains previousIndex
             if(Contains(previousIndex) == false)
@@ -60,7 +60,7 @@ namespace CMDR.DataSystem
             Add(newIndex);
         }
 
-        OnComponentDestroyed(int index)
+        public void OnComponentDestroyed(int index)
         {
             // Check if this QueryList contains index
             if(Contains(index) == false)
@@ -93,18 +93,31 @@ namespace CMDR.DataSystem
 
         private bool Contains(int index)
         {
-            for(int i = 0; i < _data.Length - 1; i++)
-            {
-
-            }
-            return false;
+            return BinarySearch(index, 0, _data.Length - 1);
         }
 
         private bool BinarySearch(int index, int low, int high)
         {
             int mid = low + high / 2;
 
-            if (_data[mid].Start)
+            if (_data[mid].Contains(index))
+            {
+                return true;
+            }
+
+            if (low >= high)
+            {
+                return false;
+            }
+
+            if (_data[mid].Start < index)
+            {
+                return BinarySearch(index, mid + 1, high);
+            }
+            else
+            {
+                return BinarySearch(index, low, mid - 1);
+            }
         }
 
         private int FindPosition(int index)
