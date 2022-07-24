@@ -6,18 +6,16 @@ namespace Test
     class Test
     {
         static Scene Scene = new Scene();
-
-        static GameObjectBuilder gameObject = new GameObjectBuilder();
-
+        
+        static GameObjectBuilder gameObjectBuilder = new GameObjectBuilder();
+        
         static Transform transform = new Transform();
+        
         static void Main(string[] args)
         {
-            gameObject.Bind<Transform>(transform);
+            gameObjectBuilder.Bind(transform);
 
-            Scene.Populate(gameObject);
-
-
-            Console.ReadKey();
+            Scene.Populate(gameObjectBuilder);
         }
     }
 }

@@ -6,14 +6,6 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.1": {
-      "Test/1.0.0": {
-        "dependencies": {
-          "DataSystem": "1.0.0"
-        },
-        "runtime": {
-          "Test.dll": {}
-        }
-      },
       "DataSystem/1.0.0": {
         "runtime": {
           "DataSystem.dll": {}
@@ -22,11 +14,6 @@
     }
   },
   "libraries": {
-    "Test/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
     "DataSystem/1.0.0": {
       "type": "project",
       "serviceable": false,

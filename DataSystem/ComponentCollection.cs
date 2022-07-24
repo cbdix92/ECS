@@ -21,11 +21,6 @@ namespace CMDR
 
         public int Capacity { get => _capacity; }
 
-        /// <summary>
-        /// The size in bytes of the IComponent that this collection stores.
-        /// </summary>
-        public int Size { get; }
-
         public T this[int index]
         {
             get
@@ -54,15 +49,13 @@ namespace CMDR
 
         #endregion
 
-        internal ComponentCollection(int capacity, int size)
+        public ComponentCollection()
         {
-            _capacity = capacity;
+            _capacity = Data.StorageScale;
 
-            Size = size;
-
-            _components = new T[capacity];
+            _components = new T[_capacity];
             
-            _idToIndexLookUp = new Dictionary<ID, int>(capacity);
+            _idToIndexLookUp = new Dictionary<ID, int>(_capacity);
         }
 
         
@@ -246,8 +239,6 @@ namespace CMDR
         public event OnComponentMovedHandler ComponentMovedEvent;
 
         int Count { get; }
-
-        int Size { get; }
 
         void Add(T component);
 

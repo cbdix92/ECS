@@ -26,7 +26,7 @@ namespace CMDR
 
         #region PRIVATE_MEMBERS
 
-        private Dictionary<Type, IComponent> _children;
+        private readonly Dictionary<Type, IComponent> _children;
 
         private IComponent[] _components;
 
@@ -73,9 +73,13 @@ namespace CMDR
                 return;
             }
 
+            _componentTypes[^1] = tComp;
+
+            _components[^1] = component;
+
             Array.Resize(ref _componentTypes, _componentTypes.Length + 1);
 
-            _componentTypes[^1] = tComp;
+            Array.Resize(ref _components, _components.Length + 1);
 
             _children.Add(tComp, component);
         }

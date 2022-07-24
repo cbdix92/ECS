@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace CMDR.DataSystem
 {
@@ -57,9 +56,7 @@ namespace CMDR.DataSystem
 
                 Type TNew = TComponentCollection.MakeGenericType(TComponent);
 
-                object[] args = new object[] { StorageScale, Marshal.SizeOf(TComponent) };
-
-                _components[TComponent] = Activator.CreateInstance(TNew, args) as IComponentCollection;
+                _components.Add(TComponent, Activator.CreateInstance(TNew) as IComponentCollection);
             }
 
         }
