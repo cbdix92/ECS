@@ -8,7 +8,7 @@ namespace CMDR.DataSystem
         
         #region PUBLIC_MEMBERS
 
-        public Dictionary<Query, IQueryBuilder<IComponent>> Queries { get; private set; }
+        internal Dictionary<Query, IQueryBuilder<IComponent>> Queries { get; private set; }
 
         #endregion
 
@@ -70,7 +70,7 @@ namespace CMDR.DataSystem
 
             for (int i = 0; i < componentTypes.Length - 1; i++)
             {
-                Query[] queriesByType = _typeToQueryLookup[gameObjectTypes[i]];
+                Query[] queriesByType = _typeToQueryLookup[componentTypes[i]];
                 
                 for (int j = 0; j < queriesByType.Length - 1; j++)
                 {
