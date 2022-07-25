@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace CMDR.DataSystem
 {
@@ -23,9 +24,9 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private Dictionary<ID, GameObject> _gameObjects;
+        private readonly Dictionary<ID, GameObject> _gameObjects;
 
-        private Dictionary<Type, IComponentCollection<IComponent>> _components;
+        private readonly Dictionary<Type, IComponentCollection<IComponent>> _components;
 
         private static Type[] _types;
 

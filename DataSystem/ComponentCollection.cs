@@ -10,7 +10,6 @@ namespace CMDR
     
     internal class ComponentCollection<T> : IComponentCollection<T> where T : struct, IComponent
     {
-
         #region PUBLIC_MEMBERS
 
         public event OnComponentDestroyedHandler ComponentDestroyedEvent;
@@ -57,7 +56,6 @@ namespace CMDR
             
             _idToIndexLookUp = new Dictionary<ID, int>(_capacity);
         }
-
         
         #region PUBLIC_METHODS
 
@@ -168,7 +166,14 @@ namespace CMDR
             // Rebuild the ID lookup to reflect the changes.
             for(int i = 0; i < _count; i++)
             {
-                _idToIndexLookUp[_components[i].ID] = i;
+                int previousIndex = _idToIndexLookUp[_components[i].ID];
+                
+                if (previousIndex != i)
+                {
+                    ComponentMovedEvent?.Invoke(previousIndex, i);
+
+                    _idToIndexLookUp[_components[i].ID] = i;
+                }
             }
         }
 
