@@ -1,4 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 using CMDR.DataSystem;
 
 
@@ -15,8 +19,15 @@ namespace CMDR
 
         #endregion
 
+        #region INTERNAL_MEMBERS
+
         internal Data Data;
 
+        #endregion
+
+        #region PRIVATE_MEMBERS
+
+        #endregion
 
         public Scene()
         {
@@ -49,8 +60,12 @@ namespace CMDR
             for(int i = 0; i < types.Length - 1; i++)
             {
                 components[i].ID.InlayID(id.Id);
+                
+                dynamic caster = DynamicCaster.CastHelper(types[i])(components[i]);
+                //dynamic caster = _cachedTypeCasterMethods[types[i]][0];
+                dynamic dynamicComp = caster(types[i])(components[i]);
 
-                Data.StoreComponent(types[i], components[i]);
+                Data.StoreComponent(dynamicComp);
             }
 
             // Store GameObject
@@ -65,7 +80,7 @@ namespace CMDR
 
         public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
         {
-            return Data.GetComponent(id, out component);
+            return Data.GetComponent<T>(id, out component);
         }
 
         public bool GetGameObject(ID id, out GameObject gameObject)

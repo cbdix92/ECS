@@ -2,7 +2,7 @@ using System;
 
 namespace CMDR.DataSystem
 {
-    internal sealed class QueryBuilder<T> : QueryList, IQueryBuilder<T> where T : struct, IComponent
+    internal sealed class QueryBuilder<T> : QueryList, IQueryBuilder<T> where T : struct, IComponent<T>
     {
         #region PUBLIC_MEMBERS
 
@@ -12,13 +12,13 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private readonly IComponentCollection<T> _collection;
+        private readonly ComponentCollection _collection;
 
         #endregion
 
-        public QueryBuilder(IComponentCollection<IComponent> collection) : base()
+        public QueryBuilder(ComponentCollection collection) : base()
         {
-            _collection = collection as IComponentCollection<T>;
+            _collection = collection;
         }
 
         #region PUBLIC_METHODS
@@ -32,7 +32,7 @@ namespace CMDR.DataSystem
                 return false;
             }
 
-            components = new Span<T>(_collection.ToArray(), _data[_nextSlice].Start, _data[_nextSlice].End);
+            components = new Span<T>(_collection.ToArray<T>(), _data[_nextSlice].Start, _data[_nextSlice].End);
             
             _nextSlice++;
 

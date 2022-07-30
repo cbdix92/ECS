@@ -14,6 +14,8 @@ namespace CMDR.DataSystem
 
         public static int NumberOfComponentTypes { get => _types.Length - 1; }
 
+        public Type[] Types => _types;
+
         #endregion
 
         #region INTERNAL_MEMBERS
@@ -26,7 +28,7 @@ namespace CMDR.DataSystem
 
         private readonly Dictionary<ID, GameObject> _gameObjects;
 
-        private readonly Dictionary<Type, IComponentCollection<IComponent>> _components;
+        private readonly Dictionary<Type, ComponentCollection> _components;
 
         private static Type[] _types;
 
@@ -40,7 +42,7 @@ namespace CMDR.DataSystem
 
             _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
 
-            _components = new Dictionary<Type, IComponentCollection<IComponent>>(_types.Length - 1);
+            _components = new Dictionary<Type, ComponentCollection>(_types.Length - 1);
 
 #pragma warning disable
             base._componentsQueryRef = _components;
@@ -48,16 +50,12 @@ namespace CMDR.DataSystem
 
             _idProvider = new IDProvider();
 
-            Type TComponentCollection = typeof(ComponentCollection<>);
-
             foreach (Type TComponent in _types)
             {
                 if (TComponent.Name == typeof(IComponent<>).Name)
                     continue;
 
-                Type TNew = TComponentCollection.MakeGenericType(TComponent);
-
-                _components.Add(TComponent, Activator.CreateInstance(TNew) as IComponentCollection);
+                _components.Add(TComponent, new ComponentCollection(TComponent));
             }
 
         }
@@ -81,7 +79,13 @@ namespace CMDR.DataSystem
             return query;
         }
 
-        public void StoreComponent(Type type, IComponent component) => _components[type].Add(component);
+        public void StoreComponent<T>(T component) where T : struct, IComponent<T>
+        {
+            unsafe
+            {
+                _components[typeof(T)].Add<T>(component);
+            }
+        }
 
         public void StoreGameObject(GameObject gameObject) => _gameObjects.Add(gameObject.ID, gameObject);
 
@@ -97,7 +101,7 @@ namespace CMDR.DataSystem
             // Remove all components
             foreach(Type t in gameObject.Components)
             {
-                _components[t].Remove(id);
+                //_components[t].Remove(id);
             }
 
             // Remove GameObject
@@ -105,6 +109,22 @@ namespace CMDR.DataSystem
             
             // Make ID unusable
             id.Retire();
+
+            return true;
+        }
+
+        public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
+        {
+            Type tComp = typeof(T);
+
+            if (_components[tComp].Contains(id) == false)
+            {
+                component = default;
+
+                return false;
+            }
+
+            component = _components[tComp].Get<T>(id);
 
             return true;
         }
@@ -120,59 +140,6 @@ namespace CMDR.DataSystem
             
             gameObject = default;
             
-            return false;
-        }
-        
-        public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
-        {
-            Type tComp = typeof(T);
-
-            if(_components[tComp].Contains(id))
-            {
-                component = (T)_components[tComp].Get(id);
-
-                return true;
-            }
-
-            component = default;
-
-            return false;
-        }
-
-        /// <summary>
-        /// Update a GameObject within the data storage.
-        /// </summary>
-        /// <param name="gameObject"> The GameObject that is to be updated. </param>
-        /// <returns> Return True if the GameObject was updated, otherwise returns False. </returns>
-        public bool Update(GameObject gameObject)
-        {
-            if(_gameObjects.ContainsKey(gameObject.ID))
-            {
-                _gameObjects[gameObject.ID] = gameObject;
-                
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Update a Component within the data storage.
-        /// </summary>
-        /// <typeparam name="T"> Type of IComponent. </typeparam>
-        /// <param name="component"> The Component that is to be updated. </param>
-        /// <returns> Returns True if the Component was updated, otherwise returns False. </returns>
-        public bool Update<T>(T component) where T : struct, IComponent<T>
-        {
-            Type tComp = typeof(T);
-
-            if(_components[tComp].Contains(component.ID))
-            {
-                _components[tComp].Update(component);
-                
-                return true;
-            }
-
             return false;
         }
 

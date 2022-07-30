@@ -16,7 +16,7 @@ namespace CMDR.DataSystem
 
         private readonly Dictionary<Type, Query[]> _typeToQueryLookup;
 
-        protected private Dictionary<Type, IComponentCollection<IComponent>> _componentsQueryRef;
+        protected private Dictionary<Type, ComponentCollection> _componentsQueryRef;
         #endregion
 
         protected private Queryable()
