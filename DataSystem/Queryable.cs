@@ -70,6 +70,11 @@ namespace CMDR.DataSystem
 
             for (int i = 0; i < componentTypes.Length - 1; i++)
             {
+                if (_typeToQueryLookup.ContainsKey(componentTypes[i]) == false)
+                {
+                    continue;
+                }
+
                 Query[] queriesByType = _typeToQueryLookup[componentTypes[i]];
                 
                 for (int j = 0; j < queriesByType.Length - 1; j++)

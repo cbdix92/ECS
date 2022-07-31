@@ -110,7 +110,7 @@ namespace CMDR
 
         #endregion
 
-        internal void GetComponents(out Type[] types, out IComponent[] components)
+        public void GetComponents(out Type[] types, out IComponent[] components)
         {
             types = _componentTypes;
 

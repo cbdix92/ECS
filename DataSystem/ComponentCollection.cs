@@ -29,7 +29,7 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_MEMBERS
 
-        private unsafe byte* _components;
+        private unsafe byte* _componentsPtr;
 
         private int _count;
 
@@ -58,7 +58,7 @@ namespace CMDR.DataSystem
 
             unsafe
             {
-                _components = (byte*)Marshal.AllocHGlobal(_capacity);
+                _componentsPtr = (byte*)Marshal.AllocHGlobal(_capacity);
             }
         }
 
@@ -66,7 +66,7 @@ namespace CMDR.DataSystem
         {
             unsafe
             {
-                Marshal.FreeHGlobal((IntPtr)_components);
+                Marshal.FreeHGlobal((IntPtr)_componentsPtr);
             }
         }
 
@@ -81,9 +81,14 @@ namespace CMDR.DataSystem
                 IncreaseCapacity();
             }
 
+            if (component is Transform t)
+            {
+                Console.WriteLine($"Add {t.ID.ToString()}");
+            }
+
             unsafe
             {
-                Unsafe.Write(_components + (_count * _componentSizeInBytes), component);
+                Unsafe.Write(_componentsPtr + (_count * _componentSizeInBytes), component);
             }
 
             _count++;
@@ -116,7 +121,7 @@ namespace CMDR.DataSystem
 
             unsafe
             {
-                return ref Unsafe.AsRef<T>(Unsafe.Add<T>(_components, index));
+                return ref Unsafe.AsRef<T>(Unsafe.Add<T>(_componentsPtr, index));
             }
         }
 
@@ -126,7 +131,7 @@ namespace CMDR.DataSystem
 
             unsafe
             {
-                Span<T> _ = new Span<T>(_components, _count);
+                Span<T> _ = new Span<T>(_componentsPtr, _count);
 
                 return _.Slice(index, index).ToArray()[0];
             }
@@ -151,7 +156,7 @@ namespace CMDR.DataSystem
 
             unsafe
             {
-                return new Span<T>(_components, _count);
+                return new Span<T>(_componentsPtr, _count);
             }
         }
 
@@ -185,7 +190,7 @@ namespace CMDR.DataSystem
             // Replace the component with the one at the end of the array. 
             unsafe
             {
-                Unsafe.AsRef<T>(Unsafe.Add<T>(_components, index)) = Unsafe.AsRef<T>(Unsafe.Add<T>(_components, _count));
+                Unsafe.AsRef<T>(Unsafe.Add<T>(_componentsPtr, index)) = Unsafe.AsRef<T>(Unsafe.Add<T>(_componentsPtr, _count));
             }
 
             // Change ID lookup to reflect the changes.
@@ -242,7 +247,7 @@ namespace CMDR.DataSystem
 
             byte* newMemory = (byte*)Marshal.AllocHGlobal(newSize);
 
-            Unsafe.CopyBlock(newMemory, _components, (uint)_capacity);
+            Unsafe.CopyBlock(newMemory, _componentsPtr, (uint)_capacity);
 
             Span<byte> memoryToInit = new Span<byte>(newMemory + _capacity, newSize - _capacity);
 
@@ -250,9 +255,9 @@ namespace CMDR.DataSystem
 
             _capacity = newSize;
 
-            Marshal.FreeHGlobal((IntPtr)_components);
+            Marshal.FreeHGlobal((IntPtr)_componentsPtr);
 
-            _components = newMemory;
+            _componentsPtr = newMemory;
         }
 
         /// <summary>

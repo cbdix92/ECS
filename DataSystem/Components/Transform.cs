@@ -1,15 +1,16 @@
 
 
+using System.Runtime.InteropServices;
+
 namespace CMDR
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct Transform : IComponent<Transform>
     {
 
         #region PUBLIC_MEMBERS
 
         public ID ID { get; set; }
-
-        public Scene Scene { get; internal set; }
         
         /// <summary>
         /// Determines if the Model Matrix needs to be recalculated.

@@ -41,13 +41,13 @@ namespace CMDR
 
         private ulong _id;
 
-        private static uint _idMask = 0xffffff;
+        private readonly static uint _idMask = 0xffffff;
 
-        private static ulong _batchMask = 0xffff000000;
+        private readonly static ulong _batchMask = 0xffff000000;
 
-        private static ulong _idWithBatchMask = _idMask | _batchMask;
+        private readonly static ulong _idWithBatchMask = _idMask | _batchMask;
 
-        private static ulong _metaDataMask = 0xffffff0000000000;
+        private readonly static ulong _metaDataMask = 0xffffff0000000000;
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace CMDR
 
         public static ulong operator >>(ID id, int n) => id.Id >> n;
 
-        public static bool operator ==(ID id, ID id2) => id2.Id == id.Id;
+        public static bool operator ==(ID id, ID id2) => id.Id == id2.Id;
 
         public static bool operator ==(ID id, uint n) => id.Id == n;
 
@@ -85,17 +85,32 @@ namespace CMDR
         public override int GetHashCode() => Id.GetHashCode();
         
         // object.Equals is overriden so that Dictionary will only consider the ID part of _id.
-        public override bool Equals(object obj) => Id.Equals(obj);
+        public override bool Equals(object obj)
+        {
+            if (obj is ID id)
+            {
+                if (Id == id.Id)
+                    return true;
+            }
+            return false;
+        }
 
+        /// <summary>
+        /// Creates a string of binary numbers to represent this ID. Meta data, Batch ID,
+        /// and Base ID will be seperated by an underscore.
+        /// </summary>
+        /// <returns> A string that represents this ID. </returns>
         public override string ToString()
         {
-            StringBuilder sb = new StringBuilder(17 + (sizeof(ulong) * 8));
+            StringBuilder sb = new StringBuilder(18 + (sizeof(ulong) * 8));
 
             sb.Append(Convert.ToString(MetaData, 2));
 
             sb.Append("_");
 
             sb.Append(Convert.ToString(BatchID, 2));
+
+            sb.Append("_");
 
             sb.Append(Convert.ToString(BaseID, 2));
 
@@ -110,7 +125,7 @@ namespace CMDR
         /// Inlay a new base ID and Batch ID. Used to initialize a components ID without disturbing Meta Data.
         /// </summary>
         /// <param name="id"> A base ID with Batch ID. </param>
-        internal void InlayID(ulong id) => _id |= (id | (_id | _metaDataMask));
+        internal void InlayID(ulong id) => _id |= id;
 
         #endregion
     }

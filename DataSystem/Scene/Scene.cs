@@ -61,11 +61,11 @@ namespace CMDR
             {
                 components[i].ID.InlayID(id.Id);
 
-                dynamic test = components[i];
-                //dynamic caster = DynamicCaster.CachedTypeCasterMethods[types[i]][0];
-                //dynamic dynamicComp = caster(types[i])(components[i]);
+                dynamic comp = components[i];
 
-                Data.StoreComponent(test);
+                //comp.ID.InlayID(id.Id);
+
+                Data.StoreComponent(comp);
             }
 
             // Store GameObject
@@ -80,7 +80,7 @@ namespace CMDR
 
         public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
         {
-            return Data.GetComponent<T>(id, out component);
+            return Data.GetComponent(id, out component);
         }
 
         public bool GetGameObject(ID id, out GameObject gameObject)

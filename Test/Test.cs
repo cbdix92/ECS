@@ -13,14 +13,21 @@ namespace Test
         
         static void Main(string[] args)
         {
+            transform.Teleport(new Vector3(5));
+            Console.WriteLine($"Main {transform.Position.X}");
+
             gameObjectBuilder.Bind(transform);
 
-            Scene.Populate(gameObjectBuilder);
-        }
+            gameObjectBuilder.GetComponents(out Type[] types, out IComponent[] components);
+            Transform j = (Transform)components[0];
+            Console.WriteLine($"Builder {j.Position.X}");
 
-        static Transform convert(IComponent component)
-        {
-            return (Transform)component;
+            ID id = Scene.Populate(gameObjectBuilder);
+
+            Console.WriteLine(id.ToString());
+
+            Scene.GetComponent(id, out Transform t);
+            Console.WriteLine($"DataSYS {t.Position.X}");
         }
     }
 }
