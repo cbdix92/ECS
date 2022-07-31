@@ -17,5 +17,10 @@ namespace Test
 
             Scene.Populate(gameObjectBuilder);
         }
+
+        static Transform convert(IComponent component)
+        {
+            return (Transform)component;
+        }
     }
 }

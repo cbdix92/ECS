@@ -28,11 +28,12 @@ namespace CMDR.DataSystem
             CacheTypeCaster<Transform>();
         }
 
+        /*
         static void CacheTypeCaster<T>()
         {
             Type tComp = typeof(T);
 
-            MethodInfo genericCasterMethod = typeof(Scene).GetMethod("GenericCaster", BindingFlags.Static | BindingFlags.NonPublic);
+            MethodInfo genericCasterMethod = typeof(DynamicCaster).GetMethod("GenericCaster", BindingFlags.Static | BindingFlags.NonPublic);
 
             MethodInfo genericCasterConverted = genericCasterMethod.MakeGenericMethod(typeof(IComponent), tComp);
 
@@ -43,14 +44,22 @@ namespace CMDR.DataSystem
         {
             ParameterExpression inputObject = Expression.Parameter(typeof(TInterface));
 
-            return Expression.Lambda<Func<TInterface, TComponent>>(Expression.Convert(inputObject, type), Expression.Parameter(typeof(TInterface))).Compile();
+            return Expression.Lambda<Func<TInterface, TComponent>>(Expression.Convert(inputObject, type), inputObject).Compile();
+        }
+        */
+
+        static void CacheTypeCaster<TComp>()
+        {
+            MethodInfo casterMethod = typeof(DynamicCaster).GetMethod("CastHelper", BindingFlags.Static | BindingFlags.NonPublic);
+
+            MethodInfo casterMethodConverted = casterMethod.MakeGenericMethod(typeof(TComp));
+
+            CachedTypeCasterMethods[typeof(TComp)].Add(Delegate.CreateDelegate(typeof(Func<IComponent, TComp>), casterMethodConverted));
         }
 
-        public static Func<object, object> CastHelper(Type type)
+        static TComp CastHelper<TComp>(IComponent component)
         {
-            ParameterExpression inputObject = Expression.Parameter(typeof(object));
-
-            return Expression.Lambda<Func<object, object>>(Expression.Convert(inputObject, type), Expression.Parameter(typeof(object))).Compile();
+            return (TComp)component;
         }
     }
 }

@@ -60,12 +60,12 @@ namespace CMDR
             for(int i = 0; i < types.Length - 1; i++)
             {
                 components[i].ID.InlayID(id.Id);
-                
-                dynamic caster = DynamicCaster.CastHelper(types[i])(components[i]);
-                //dynamic caster = _cachedTypeCasterMethods[types[i]][0];
-                dynamic dynamicComp = caster(types[i])(components[i]);
 
-                Data.StoreComponent(dynamicComp);
+                dynamic test = components[i];
+                //dynamic caster = DynamicCaster.CachedTypeCasterMethods[types[i]][0];
+                //dynamic dynamicComp = caster(types[i])(components[i]);
+
+                Data.StoreComponent(test);
             }
 
             // Store GameObject
