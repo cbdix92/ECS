@@ -59,11 +59,15 @@ namespace CMDR
 
             for(int i = 0; i < types.Length - 1; i++)
             {
-                components[i].ID.InlayID(id.Id);
+                //components[i].ID.InlayID(id.Id);
 
                 dynamic comp = components[i];
 
-                //comp.ID.InlayID(id.Id);
+                ID compID = comp.ID;
+
+                compID.InlayID(id.Id);
+
+                comp.ID = compID;
 
                 Data.StoreComponent(comp);
             }

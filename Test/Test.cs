@@ -24,8 +24,6 @@ namespace Test
 
             ID id = Scene.Populate(gameObjectBuilder);
 
-            Console.WriteLine(id.ToString());
-
             Scene.GetComponent(id, out Transform t);
             Console.WriteLine($"DataSYS {t.Position.X}");
         }

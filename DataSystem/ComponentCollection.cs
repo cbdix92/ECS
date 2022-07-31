@@ -81,11 +81,6 @@ namespace CMDR.DataSystem
                 IncreaseCapacity();
             }
 
-            if (component is Transform t)
-            {
-                Console.WriteLine($"Add {t.ID.ToString()}");
-            }
-
             unsafe
             {
                 Unsafe.Write(_componentsPtr + (_count * _componentSizeInBytes), component);
@@ -133,7 +128,7 @@ namespace CMDR.DataSystem
             {
                 Span<T> _ = new Span<T>(_componentsPtr, _count);
 
-                return _.Slice(index, index).ToArray()[0];
+                return _.Slice(index, index + 1)[0];
             }
 
         }

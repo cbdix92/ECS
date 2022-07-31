@@ -117,8 +117,6 @@ namespace CMDR.DataSystem
         {
             Type tComp = typeof(T);
 
-            Console.WriteLine(id.ToString());
-
             if (_components[tComp].Contains(id) == false)
             {
                 component = default;

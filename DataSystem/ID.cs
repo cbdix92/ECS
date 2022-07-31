@@ -19,10 +19,10 @@ namespace CMDR
 
         public uint this[uint mask]
         {
-            get => (mask & (uint)(_id >> 32));
+            get => (mask & (uint)(_id >> 40));
             set
             {
-                _id |= ((ulong)value << 32);
+                _id |= ((ulong)value << 40);
             }
         }
 
@@ -125,7 +125,10 @@ namespace CMDR
         /// Inlay a new base ID and Batch ID. Used to initialize a components ID without disturbing Meta Data.
         /// </summary>
         /// <param name="id"> A base ID with Batch ID. </param>
-        internal void InlayID(ulong id) => _id |= id;
+        internal void InlayID(ulong id)
+        {
+            _id |= id;
+        }
 
         #endregion
     }
