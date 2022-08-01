@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CMDR;
 
 namespace Test
@@ -12,35 +13,33 @@ namespace Test
         static Transform transform = new Transform();
 
         static Random r = new Random();
+
+        static int size = 3000;
+
+        static List<ID> ids = new List<ID>(size);
+
+        static List<float> initialPos = new List<float>(size);
         
         static void Main(string[] args)
         {
-            ID id;
             Transform tOut;
-            for (int i = 0; i < 200; i++)
-            {
-                transform.Teleport(new Vector3(r.Next(0, 300)));
-                gameObjectBuilder.Bind(transform);
-                id = Scene.Populate(gameObjectBuilder);
-                Scene.GetComponent(id, out tOut);
-                Console.Write($"{transform.Position.X} - ");
-                Console.WriteLine(tOut.Position.X);
 
+            for (int i = 0; i < size; i++)
+            {
+                initialPos.Add(r.Next(0, 500));
+                transform.Teleport(new Vector3(initialPos[i]));
+                gameObjectBuilder.Bind(transform);
+                ids.Add(Scene.Populate(gameObjectBuilder));
             }
 
-            transform.Teleport(new Vector3(5));
-            Console.WriteLine($"Main {transform.Position.X}");
+            for (int i = 0; i < size; i++)
+            {
+                Scene.GetComponent(ids[i], out tOut);
+                Console.Write($"{initialPos[i]} - ");
+                Console.WriteLine(tOut.Position.X);
+            }
 
-            gameObjectBuilder.Bind(transform);
-
-            gameObjectBuilder.GetComponents(out Type[] types, out IComponent[] components);
-            Transform j = (Transform)components[0];
-            Console.WriteLine($"Builder {j.Position.X}");
-
-            id = Scene.Populate(gameObjectBuilder);
-
-            Scene.GetComponent(id, out Transform t);
-            Console.WriteLine($"DataSYS {t.Position.X}");
+            Console.ReadKey();
         }
     }
 }

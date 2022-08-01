@@ -127,8 +127,7 @@ namespace CMDR.DataSystem
             unsafe
             {
                 Span<T> _ = new Span<T>(_componentsPtr, _count);
-
-                return _.Slice(index, index + 1)[0];
+                return _[index];
             }
 
         }

@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Reflection;
 using CMDR.DataSystem;
 
 
@@ -57,7 +53,7 @@ namespace CMDR
             // Store Components
             gameObjectBuilder.GetComponents(out Type[] types, out IComponent[] components);
 
-            for(int i = 0; i < types.Length - 1; i++)
+            for(int i = 0; i < types.Length; i++)
             {
                 dynamic comp = components[i];
 
