@@ -23,7 +23,7 @@ namespace Test
         static void Main(string[] args)
         {
 
-            Scene.RegisterQuery<Transform>();
+            Query query = Scene.RegisterQuery<Transform>(MyFilter);
 
             Transform tOut;
 
@@ -41,8 +41,17 @@ namespace Test
                 Console.Write($"{initialPos[i]} - ");
                 Console.WriteLine(tOut.Position.X);
             }
+            Span<Transform> transforms = new Span<Transform>();
+            Scene.GetQuery(query, out transforms);
 
             Console.ReadKey();
+        }
+
+        private static bool MyFilter(GameObject gameObject)
+        {
+            if (gameObject.ContainsComponent<Transform>())
+                return true;
+            return false;
         }
     }
 }

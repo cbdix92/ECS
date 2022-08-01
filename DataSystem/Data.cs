@@ -12,9 +12,22 @@ namespace CMDR.DataSystem
         
         public static readonly int StorageScale = byte.MaxValue;
 
-        public static int NumberOfComponentTypes { get => _types.Length - 1; }
+        public static int NumberOfComponentTypes { get => Types.Length - 1; }
 
-        public Type[] Types => _types;
+        public static Type[] Types
+        {
+            get
+            {
+                if(_types == null)
+                {
+                    Type[] tComps = Assembly.GetExecutingAssembly().GetTypes()
+                        .Where(T => T.GetInterfaces().Contains(typeof(IComponent)) 
+                        && T.Name != typeof(IComponent<>).Name).ToArray();
+                }
+
+                return _types;
+            }
+        }
 
         #endregion
 
@@ -38,11 +51,10 @@ namespace CMDR.DataSystem
 
         public Data() : base()
         {
-            _types = Assembly.GetExecutingAssembly().GetTypes().Where(T => T.GetInterfaces().Contains(typeof(IComponent))).ToArray();
 
             _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
 
-            _components = new Dictionary<Type, ComponentCollection>(_types.Length - 1);
+            _components = new Dictionary<Type, ComponentCollection>(Types.Length - 1);
 
 #pragma warning disable
             base._componentsQueryRef = _components;
@@ -50,7 +62,7 @@ namespace CMDR.DataSystem
 
             _idProvider = new IDProvider();
 
-            foreach (Type TComponent in _types)
+            foreach (Type TComponent in Types)
             {
                 if (TComponent.Name == typeof(IComponent<>).Name)
                     continue;

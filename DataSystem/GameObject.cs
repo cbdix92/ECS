@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 
-namespace CMDR.DataSystem
+namespace CMDR
 {
     public struct GameObject
     {

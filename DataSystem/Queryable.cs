@@ -64,7 +64,7 @@ namespace CMDR.DataSystem
         /// Note that the Components of the GameObject must be stored in the Data System prior to sorting.
         /// </summary>
         /// <param name="gameObject"> The GameObject that is to be sorted. </param>
-        public void Sort(GameObject gameObject)
+        protected private void Sort(GameObject gameObject)
         {
             Type[] componentTypes = gameObject.Components;
 

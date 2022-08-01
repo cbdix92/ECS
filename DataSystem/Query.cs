@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CMDR.DataSystem
+namespace CMDR
 {
 
     public struct Query
@@ -21,6 +21,4 @@ namespace CMDR.DataSystem
 
         public Query(Type type, Filter filter) => (Type, Filter) = (type, filter);
     }
-
-    public delegate bool Filter(GameObject gameObject);
 }

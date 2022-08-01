@@ -11,18 +11,6 @@ namespace CMDR
 
         public static Scene Active { get; private set; }
 
-        public int ID { get; internal set; }
-
-        #endregion
-
-        #region INTERNAL_MEMBERS
-
-        //public Data Data;
-
-        #endregion
-
-        #region PRIVATE_MEMBERS
-
         #endregion
 
         public Scene() : base()
