@@ -5,7 +5,7 @@ using CMDR.DataSystem;
 namespace CMDR
 {
     [Serializable]
-    public sealed class Scene
+    public sealed class Scene : Data
     {
         #region PUBLIC_MEMBERS
 
@@ -17,7 +17,7 @@ namespace CMDR
 
         #region INTERNAL_MEMBERS
 
-        internal Data Data;
+        //public Data Data;
 
         #endregion
 
@@ -25,9 +25,9 @@ namespace CMDR
 
         #endregion
 
-        public Scene()
+        public Scene() : base()
         {
-            Data = new Data();
+            //Data = new Data();
 
             if (Active == null)
             {
@@ -37,15 +37,25 @@ namespace CMDR
 
         #region PUBLIC_METHODS
 
-        public void DestroyGameObject(ref ID id)
+        public new void DestroyGameObject(ref ID id)
         {
-            Data.DestroyGameObject(ref id);
+            base.DestroyGameObject(ref id);
         }
 
+        public new bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
+        {
+            return base.GetComponent(id, out component);
+        }
+
+        public new bool GetGameObject(ID id, out GameObject gameObject)
+        {
+            return base.GetGameObject(id, out gameObject);
+        }
+        
         public ID Populate(GameObjectBuilder gameObjectBuilder)
         {
             // Generate ID
-            ID id = Data.GenerateNewID();
+            ID id = base.GenerateNewID();
 
             // Generate GameObject
             GameObject gameObject = new GameObject(this, id, gameObjectBuilder.Types);
@@ -63,27 +73,17 @@ namespace CMDR
 
                 comp.ID = compID;
 
-                Data.StoreComponent(comp);
+                StoreComponent(comp);
             }
 
             // Store GameObject
-            Data.StoreGameObject(gameObject);
+            base.StoreGameObject(gameObject);
 
             // Sort GameObject
-            Data.Sort(gameObject);
+            base.Sort(gameObject);
 
             // Return Generated ID
             return id;
-        }
-
-        public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
-        {
-            return Data.GetComponent(id, out component);
-        }
-
-        public bool GetGameObject(ID id, out GameObject gameObject)
-        {
-            return Data.GetGameObject(id, out gameObject);
         }
 
         #endregion

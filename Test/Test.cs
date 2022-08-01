@@ -22,6 +22,9 @@ namespace Test
         
         static void Main(string[] args)
         {
+
+            Scene.RegisterQuery<Transform>();
+
             Transform tOut;
 
             for (int i = 0; i < size; i++)

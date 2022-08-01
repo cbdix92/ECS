@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace CMDR.DataSystem
 {
-    internal sealed class Data : Queryable
+    public class Data : Queryable
     {
         #region PUBLIC_MEMBERS
         
@@ -62,11 +62,6 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
-        public ID GenerateNewID()
-        {
-            return _idProvider.GenerateID();
-        }
-
         public override Query RegisterQuery<T>(Filter filter)
         {
             Query query = base.RegisterQuery<T>(filter);
@@ -79,17 +74,11 @@ namespace CMDR.DataSystem
             return query;
         }
 
-        public void StoreComponent<T>(T component) where T : struct, IComponent<T>
-        {
-            unsafe
-            {
-                _components[typeof(T)].Add<T>(component);
-            }
-        }
+        #endregion
 
-        public void StoreGameObject(GameObject gameObject) => _gameObjects.Add(gameObject.ID, gameObject);
-
-        public bool DestroyGameObject(ref ID id)
+        #region PRIVATE_METHODS
+        
+        protected private bool DestroyGameObject(ref ID id)
         {
             if(_gameObjects.ContainsKey(id) == false)
             {
@@ -113,7 +102,12 @@ namespace CMDR.DataSystem
             return true;
         }
 
-        public bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
+        protected private ID GenerateNewID()
+        {
+            return _idProvider.GenerateID();
+        }
+        
+        protected private bool GetComponent<T>(ID id, out T component) where T : struct, IComponent<T>
         {
             Type tComp = typeof(T);
 
@@ -129,7 +123,7 @@ namespace CMDR.DataSystem
             return true;
         }
 
-        public bool GetGameObject(ID id, out GameObject gameObject)
+        protected private bool GetGameObject(ID id, out GameObject gameObject)
         {
             if(_gameObjects.ContainsKey(id))
             {
@@ -142,6 +136,16 @@ namespace CMDR.DataSystem
             
             return false;
         }
+
+        protected private void StoreComponent<T>(T component) where T : struct, IComponent<T>
+        {
+            unsafe
+            {
+                _components[typeof(T)].Add<T>(component);
+            }
+        }
+        
+        protected private void StoreGameObject(GameObject gameObject) => _gameObjects.Add(gameObject.ID, gameObject);
 
         #endregion
     }
