@@ -20,7 +20,39 @@ namespace CMDR
             }
         }
 
-        public Type[] ComponentTypes { get => _componentTypes; }
+        public Type[] Types
+        {
+            get
+            {
+                if (_types != null)
+                {
+                    return _types;
+                }
+
+                _types = new Type[_children.Keys.Count];
+                
+                _children.Keys.CopyTo(_types, 0);
+                
+                return _types;
+            }
+        }
+
+        public IComponent[] Components
+        {
+            get
+            {
+                if (_components != null)
+                {
+                    return _components;
+                }
+
+                _components = new IComponent[_children.Values.Count];
+
+                _children.Values.CopyTo(_components, 0);
+
+                return _components;
+            }
+        }
 
         #endregion
 
@@ -28,17 +60,15 @@ namespace CMDR
 
         private readonly Dictionary<Type, IComponent> _children;
 
-        private IComponent[] _components;
+        private Type[] _types;
 
-        private Type[] _componentTypes;
+        private IComponent[] _components;
 
         #endregion
 
         public GameObjectBuilder()
         {
             _children = new Dictionary<Type, IComponent>(Data.NumberOfComponentTypes);
-            _components = new IComponent[1];
-            _componentTypes = new Type[1];
         }
 
         #region PUBLIC_METHODS
@@ -65,6 +95,10 @@ namespace CMDR
         /// <param name="component"> The Component that will be bound to this GameObjectBuilder. </param>
         public void Bind<T>(T component) where T : struct, IComponent<T>
         {
+            // Reset _types annd _components so it can be rebuilt by the ComponentTypes and Components properties.
+            _types = null;
+            _components = null;
+
             Type tComp = typeof(T);
 
             if(_children.ContainsKey(tComp))
@@ -72,14 +106,6 @@ namespace CMDR
                 _children[tComp] = component;
                 return;
             }
-
-            _componentTypes[^1] = tComp;
-
-            _components[^1] = component;
-
-            Array.Resize(ref _componentTypes, _componentTypes.Length + 1);
-
-            Array.Resize(ref _components, _components.Length + 1);
 
             _children.Add(tComp, component);
         }
@@ -97,6 +123,10 @@ namespace CMDR
 
         public void UnBind(Type tComp)
         {
+            // Reset _types annd _components so it can be rebuilt by the ComponentTypes and Components properties.
+            _types = null;
+            _components = null;
+
             if (_children.ContainsKey(tComp))
             {
                 _children.Remove(tComp);
@@ -105,6 +135,10 @@ namespace CMDR
 
         public void RemoveAll()
         {
+            // Reset _types annd _components so it can be rebuilt by the ComponentTypes and Components properties.
+            _types = null;
+            _components = null;
+
             _children.Clear();
         }
 
@@ -112,9 +146,9 @@ namespace CMDR
 
         public void GetComponents(out Type[] types, out IComponent[] components)
         {
-            types = _componentTypes;
+            types = Types;
 
-            components = _components;
+            components = Components;
         }
 
     }

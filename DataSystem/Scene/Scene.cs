@@ -52,15 +52,13 @@ namespace CMDR
             ID id = Data.GenerateNewID();
 
             // Generate GameObject
-            GameObject gameObject = new GameObject(this, id, gameObjectBuilder.ComponentTypes);
+            GameObject gameObject = new GameObject(this, id, gameObjectBuilder.Types);
 
             // Store Components
             gameObjectBuilder.GetComponents(out Type[] types, out IComponent[] components);
 
             for(int i = 0; i < types.Length - 1; i++)
             {
-                //components[i].ID.InlayID(id.Id);
-
                 dynamic comp = components[i];
 
                 ID compID = comp.ID;
