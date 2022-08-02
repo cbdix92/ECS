@@ -56,19 +56,4 @@ namespace CMDR.DataSystem
 
         #endregion
     }
-
-    internal interface IQueryBuilder<T>
-    {
-        void OnComponentMoved(int previousIndex, int newIndex);
-
-        void OnComponentDestroyed(int index);
-
-        void AddNew(ID id);
-
-        bool GetQuery<T>(out Span<T> components);
-    }
-
-    internal interface IQueryBuilder : IQueryBuilder<IComponent>
-    {
-    }
 }

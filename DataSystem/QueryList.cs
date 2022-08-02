@@ -91,11 +91,6 @@ namespace CMDR.DataSystem
 
         }
 
-        private bool Contains(int index)
-        {
-            return BinarySearch(index, 0, _data.Length - 1);
-        }
-
         private bool BinarySearch(int index, int low, int high)
         {
             int mid = low + high / 2;
@@ -120,6 +115,18 @@ namespace CMDR.DataSystem
             }
         }
 
+        private void Combine(int pos1, int pos2)
+        {
+            _data[pos1] = _data[pos1] + _data[pos2];
+            
+            Remove(pos2);
+        }
+
+        private bool Contains(int index)
+        {
+            return BinarySearch(index, 0, _data.Length - 1);
+        }
+
         private int FindPosition(int index)
         {
             int pos = Math.Max(_count - 1, 0);
@@ -132,36 +139,6 @@ namespace CMDR.DataSystem
             pos++;
 
             return pos;
-        }
-
-        private void SliceCheck(int newSlicePosition)
-        {
-            if (RightIsSequential(newSlicePosition))
-            {
-                Combine(newSlicePosition, newSlicePosition + 1);
-            }
-            
-            if (LeftIsSequential(newSlicePosition))
-            {
-                Combine(newSlicePosition - 1, newSlicePosition);
-            }
-        }
-
-        private bool RightIsSequential(int pos)
-        {
-            return _data[pos].End == _data[pos + 1].Start + 1;
-        }
-
-        private bool LeftIsSequential(int pos)
-        {
-            return _data[pos].Start == _data[pos - 1].End - 1;
-        }
-
-        private void Combine(int pos1, int pos2)
-        {
-            _data[pos1] = _data[pos1] + _data[pos2];
-            
-            Remove(pos2);
         }
 
         private void Insert(int pos, int index)
@@ -186,6 +163,11 @@ namespace CMDR.DataSystem
             _count++;
         }
 
+        private bool LeftIsSequential(int pos)
+        {
+            return _data[pos].Start == _data[pos - 1].End - 1;
+        }
+
         private void Remove(int indexPosition)
         {
             for (int i = indexPosition; i < _count; i++)
@@ -194,6 +176,24 @@ namespace CMDR.DataSystem
             }
 
             _count--;
+        }
+
+        private bool RightIsSequential(int pos)
+        {
+            return _data[pos].End == _data[pos + 1].Start + 1;
+        }
+
+        private void SliceCheck(int newSlicePosition)
+        {
+            if (RightIsSequential(newSlicePosition))
+            {
+                Combine(newSlicePosition, newSlicePosition + 1);
+            }
+            
+            if (LeftIsSequential(newSlicePosition))
+            {
+                Combine(newSlicePosition - 1, newSlicePosition);
+            }
         }
 
         #endregion
