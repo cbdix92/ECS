@@ -42,7 +42,7 @@ namespace Test
                 Console.WriteLine(tOut.Position.X);
             }
             Span<Transform> transforms = new Span<Transform>();
-            Scene.GetQuery(query, out transforms);
+            //Scene.GetQuery(query, out transforms);
 
             Console.ReadKey();
         }

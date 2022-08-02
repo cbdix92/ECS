@@ -20,7 +20,7 @@ namespace CMDR.DataSystem
             {
                 if(_types == null)
                 {
-                    Type[] tComps = Assembly.GetExecutingAssembly().GetTypes()
+                    _types = Assembly.GetExecutingAssembly().GetTypes()
                         .Where(T => T.GetInterfaces().Contains(typeof(IComponent)) 
                         && T.Name != typeof(IComponent<>).Name).ToArray();
                 }
@@ -54,7 +54,7 @@ namespace CMDR.DataSystem
 
             _gameObjects = new Dictionary<ID, GameObject>(StorageScale);
 
-            _components = new Dictionary<Type, ComponentCollection>(Types.Length - 1);
+            _components = new Dictionary<Type, ComponentCollection>(Types.Length);
 
 #pragma warning disable
             base._componentsQueryRef = _components;
@@ -71,22 +71,6 @@ namespace CMDR.DataSystem
             }
 
         }
-
-        #region PUBLIC_METHODS
-
-        public override Query RegisterQuery<T>(Filter filter)
-        {
-            Query query = base.RegisterQuery<T>(filter);
-
-            // Subscribe QueryList to Component Collection events.
-            Type tComp = typeof(T);
-            _components[tComp].ComponentDestroyedEvent += Queries[query].OnComponentDestroyed;
-            _components[tComp].ComponentMovedEvent += Queries[query].OnComponentMoved;
-
-            return query;
-        }
-
-        #endregion
 
         #region PRIVATE_METHODS
         

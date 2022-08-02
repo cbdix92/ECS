@@ -9,6 +9,8 @@ namespace CMDR
 
         internal readonly Filter Filter;
 
+        public Query(Type type, Filter filter) => (Type, Filter) = (type, filter);
+
         /// <summary>
         /// Checks if a GameObject meets the criteria for this Query.
         /// </summary>
@@ -18,7 +20,5 @@ namespace CMDR
         {
             return gameObject.ContainsComponent(Type) && Filter(gameObject);
         }
-
-        public Query(Type type, Filter filter) => (Type, Filter) = (type, filter);
     }
 }

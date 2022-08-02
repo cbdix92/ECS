@@ -23,6 +23,11 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
+        /// <summary>
+        /// Gets a queried slice of the target components.
+        /// </summary>
+        /// <param name="components"> The output slice of the component collection. </param>
+        /// <returns> Returns True if there are more slices, otherwise returns false. </returns>
         public bool GetQuery(out Span<T> components)
         {
             if (_nextSlice == SliceCount)

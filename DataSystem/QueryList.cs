@@ -2,7 +2,7 @@
 
 namespace CMDR.DataSystem
 {
-    public abstract class QueryList
+    public class QueryList
     {
         protected struct Slice
         {

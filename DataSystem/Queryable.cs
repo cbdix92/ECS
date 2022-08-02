@@ -28,27 +28,40 @@ namespace CMDR.DataSystem
 
         #region PUBLIC_METHODS
 
-        public virtual Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
+        public Query RegisterQuery<T>(Filter filter) where T : struct, IComponent<T>
         {
-            Type type = typeof(T);
+            Type tComp = typeof(T);
 
-            Query query = new Query(type, filter);
+            Query query = new Query(tComp, filter);
 
             if(Queries.ContainsKey(query) == false)
             {
                 Type TNew = typeof(QueryBuilder<>).MakeGenericType(typeof(T));
 
-                object[] args = new object[] { _componentsQueryRef[type] };
+                object[] args = new object[] { _componentsQueryRef[tComp] };
 
-                Queries.Add(query, Activator.CreateInstance(TNew, args) as IQueryBuilder);
+                //Queries.Add(query, Activator.CreateInstance(TNew, args) as IQueryBuilder);
 
-                if(_typeToQueryLookup.ContainsKey(type))
+                QueryBuilder<T> queryBuilder = new QueryBuilder<T>(_componentsQueryRef[tComp]);
+
+                Queries.Add(query, queryBuilder as IQueryBuilder);
+
+                if(_typeToQueryLookup.ContainsKey(tComp) == false)
                 {
-                    Query[] array = _typeToQueryLookup[type];
-                    Array.Resize<Query>(ref array, _typeToQueryLookup[type].Length + 1);
+                    _typeToQueryLookup.Add(tComp, new Query[0]);
                 }
 
-                _typeToQueryLookup[type][^1] = query;
+                Query[] array = _typeToQueryLookup[tComp];
+                
+                Array.Resize(ref array, _typeToQueryLookup[tComp].Length + 1);
+
+                array[^1] = query;
+
+                _typeToQueryLookup[tComp] = array;
+
+                // Subscribe to ComponentCollection Events
+                _componentsQueryRef[tComp].ComponentDestroyedEvent += Queries[query].OnComponentDestroyed;
+                _componentsQueryRef[tComp].ComponentMovedEvent += Queries[query].OnComponentMoved;
             }
 
             return query;
@@ -58,6 +71,10 @@ namespace CMDR.DataSystem
         {
             return Queries[query].GetQuery(out components);
         }
+
+        #endregion
+
+        #region PRIVATE_METHODS
 
         /// <summary>
         /// Sort a GameObject into the query system.
