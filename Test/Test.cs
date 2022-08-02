@@ -41,8 +41,17 @@ namespace Test
                 Console.Write($"{initialPos[i]} - ");
                 Console.WriteLine(tOut.Position.X);
             }
-            Span<Transform> transforms = new Span<Transform>();
-            //Scene.GetQuery(query, out transforms);
+
+            Span<Transform> transforms;
+            
+            while(Scene.GetQuery(query, out transforms))
+            {
+                for(int i = 0; i < transforms.Length; i++)
+                {
+                    Transform t = transforms[i];
+                    Console.WriteLine(t.Position.X);
+                }
+            }
 
             Console.ReadKey();
         }

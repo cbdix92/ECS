@@ -8,7 +8,7 @@ namespace CMDR.DataSystem
         
         #region PUBLIC_MEMBERS
 
-        internal Dictionary<Query, IQueryBuilder<IComponent>> Queries { get; private set; }
+        internal Dictionary<Query, QueryBuilder> Queries { get; private set; }
 
         #endregion
 
@@ -21,7 +21,7 @@ namespace CMDR.DataSystem
 
         protected private Queryable()
         {
-            Queries = new Dictionary<Query, IQueryBuilder<IComponent>>();
+            Queries = new Dictionary<Query, QueryBuilder>();
 
             _typeToQueryLookup = new Dictionary<Type, Query[]>();
         }
@@ -36,15 +36,7 @@ namespace CMDR.DataSystem
 
             if(Queries.ContainsKey(query) == false)
             {
-                Type TNew = typeof(QueryBuilder<>).MakeGenericType(typeof(T));
-
-                object[] args = new object[] { _componentsQueryRef[tComp] };
-
-                //Queries.Add(query, Activator.CreateInstance(TNew, args) as IQueryBuilder);
-
-                QueryBuilder<T> queryBuilder = new QueryBuilder<T>(_componentsQueryRef[tComp]);
-
-                Queries.Add(query, queryBuilder as IQueryBuilder);
+                Queries.Add(query, new QueryBuilder(_componentsQueryRef[tComp]));
 
                 if(_typeToQueryLookup.ContainsKey(tComp) == false)
                 {
@@ -67,7 +59,7 @@ namespace CMDR.DataSystem
             return query;
         }
 
-        public bool GetQuery(Query query, out Span<IComponent> components)
+        public bool GetQuery<T>(Query query, out Span<T> components) where T : struct, IComponent<T>
         {
             return Queries[query].GetQuery(out components);
         }

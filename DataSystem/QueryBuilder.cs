@@ -2,7 +2,7 @@ using System;
 
 namespace CMDR.DataSystem
 {
-    internal sealed class QueryBuilder<T> : QueryList, IQueryBuilder<T> where T : struct, IComponent<T>
+    internal sealed class QueryBuilder : QueryList
     {
         #region PUBLIC_MEMBERS
 
@@ -28,7 +28,7 @@ namespace CMDR.DataSystem
         /// </summary>
         /// <param name="components"> The output slice of the component collection. </param>
         /// <returns> Returns True if there are more slices, otherwise returns false. </returns>
-        public bool GetQuery(out Span<T> components)
+        public bool GetQuery<T>(out Span<T> components) where T : struct, IComponent<T>
         {
             if (_nextSlice == SliceCount)
             {
@@ -65,7 +65,7 @@ namespace CMDR.DataSystem
 
         void AddNew(ID id);
 
-        bool GetQuery(out Span<T> components);
+        bool GetQuery<T>(out Span<T> components);
     }
 
     internal interface IQueryBuilder : IQueryBuilder<IComponent>
