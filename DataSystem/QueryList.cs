@@ -10,6 +10,8 @@ namespace CMDR.DataSystem
 
             public readonly int End;
 
+            public int Length => Math.Max(End - Start, 1);
+
             public Slice(int start, int end) => (Start, End) = (start, end);
 
             public bool Contains(int index)
@@ -81,6 +83,56 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_METHODS
 
+        // Inlined Add for debug
+        protected void Add_(int index)
+        {
+            // FINDPOSITION()
+            int pos = 0;
+
+            for (int i = _count; i > 0; i--)
+            {
+                if (_slices[i].Start <= index)
+                {
+                    pos = i;
+                    break;
+                }
+            }
+
+
+            //INSERT()
+            // Check if storage is at capacity.
+            if (_count == _slices.Length - 1)
+            {
+                Array.Resize(ref _slices, _slices.Length + Data.StorageScale);
+            }
+
+            // Make room to insert the new index. 
+            if (pos != _count)
+            {
+                for (int i = _count - 1; i >= pos; i--)
+                {
+                    _slices[i + 1] = _slices[i];
+                }
+            }
+
+            _slices[pos] = new Slice(index, index);
+
+            _count++;
+
+
+            // SLICECHECK()
+            if (RightIsSequential(pos))
+            {
+                Combine(pos, pos + 1);
+            }
+
+            if (LeftIsSequential(pos))
+            {
+                Combine(pos - 1, pos);
+            }
+
+        }
+
         /// <summary>
         /// Adds a new index to the Slice collection.
         /// </summary>
@@ -96,7 +148,7 @@ namespace CMDR.DataSystem
 
         private bool BinarySearch(int index, int low, int high)
         {
-            int mid = low + high / 2;
+            int mid = (low + high) / 2;
 
             if (_slices[mid].Contains(index))
             {
@@ -221,7 +273,7 @@ namespace CMDR.DataSystem
         /// <returns> Returns True if the Slice is sequential, otherwise returns False. </returns>
         private bool RightIsSequential(int pos)
         {
-            return _slices[pos].End == _slices[pos + 1].Start + 1;
+            return _slices[pos].End + 1 == _slices[pos + 1].Start;
         }
 
         /// <summary>

@@ -37,7 +37,10 @@ namespace CMDR.DataSystem
                 return false;
             }
 
-            components = new Span<T>(_collection.ToArray<T>(), _slices[_nextSlice].Start, _slices[_nextSlice].End);
+            unsafe
+            {
+                components = new Span<T>(_collection.GetPtrAtIndex(_slices[_nextSlice].Start), _slices[_nextSlice].Length);
+            }
             
             _nextSlice++;
 

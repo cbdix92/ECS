@@ -13,6 +13,8 @@ namespace CMDR.DataSystem
     {
         #region PUBLIC_MEMBERS
 
+        public unsafe byte* Ptr => _componentsPtr;
+
         public int Count => _count;
 
         public int Capacity => _capacity;
@@ -142,6 +144,17 @@ namespace CMDR.DataSystem
         public int GetIndex(ID id)
         {
             return _idToIndexLookUp.ContainsKey(id) ? _idToIndexLookUp[id] : -1;
+        }
+
+        public unsafe byte* GetPtrAtIndex(int index)
+        {
+            if (index * _componentSizeInBytes > _count * _componentSizeInBytes)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+
+            return _componentsPtr + (index * _componentSizeInBytes);
         }
 
         public Span<T> GetSpan<T>()
