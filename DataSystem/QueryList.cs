@@ -33,7 +33,7 @@ namespace CMDR.DataSystem
 
         protected int _nextSlice;
 
-        protected Slice[] _data;
+        protected Slice[] _slices;
 
         private int _count;
 
@@ -41,7 +41,7 @@ namespace CMDR.DataSystem
 
         public QueryList()
         {
-            _data = new Slice[Data.StorageScale];
+            _slices = new Slice[Data.StorageScale];
         }
 
         #region PUBLIC_METHODS
@@ -95,7 +95,7 @@ namespace CMDR.DataSystem
         {
             int mid = low + high / 2;
 
-            if (_data[mid].Contains(index))
+            if (_slices[mid].Contains(index))
             {
                 return true;
             }
@@ -105,7 +105,7 @@ namespace CMDR.DataSystem
                 return false;
             }
 
-            if (_data[mid].Start < index)
+            if (_slices[mid].Start < index)
             {
                 return BinarySearch(index, mid + 1, high);
             }
@@ -117,21 +117,28 @@ namespace CMDR.DataSystem
 
         private void Combine(int pos1, int pos2)
         {
-            _data[pos1] = _data[pos1] + _data[pos2];
+            _slices[pos1] = _slices[pos1] + _slices[pos2];
             
             Remove(pos2);
         }
 
         private bool Contains(int index)
         {
-            return BinarySearch(index, 0, _data.Length - 1);
+            return BinarySearch(index, 0, _slices.Length - 1);
         }
 
+
+        /// <summary>
+        /// Finds the Slice index for a given index.
+        /// </summary>
+        /// <param name="index"> The ComponentCollection index. </param>
+        /// <returns> A slice index for the ComponentCollection index. </returns>
         private int FindPosition(int index)
         {
-            int pos = Math.Max(_count - 1, 0);
 
-            while (index < _data[pos].Start)
+            int pos = _count;
+
+            while (index > _slices[pos].Start)
             {
                 pos--;
             }
@@ -144,9 +151,9 @@ namespace CMDR.DataSystem
         private void Insert(int pos, int index)
         {
             // Check if storage is at capacity.
-            if(_count == _data.Length)
+            if(_count == _slices.Length)
             {
-                Array.Resize(ref _data, _data.Length + Data.StorageScale);
+                Array.Resize(ref _slices, _slices.Length + Data.StorageScale);
             }
 
             // Make room to insert the new index. 
@@ -154,25 +161,25 @@ namespace CMDR.DataSystem
             {
                 for (int i = _count - 1; i >= pos; i--)
                 {
-                    _data[i + 1] = _data[i];
+                    _slices[i + 1] = _slices[i];
                 }
             }
 
-            _data[pos] = new Slice(index, index);
+            _slices[pos] = new Slice(index, index);
 
             _count++;
         }
 
         private bool LeftIsSequential(int pos)
         {
-            return _data[pos].Start == _data[pos - 1].End - 1;
+            return _slices[pos].Start == _slices[pos - 1].End - 1;
         }
 
         private void Remove(int indexPosition)
         {
             for (int i = indexPosition; i < _count; i++)
             {
-                _data[i] = _data[i + 1];
+                _slices[i] = _slices[i + 1];
             }
 
             _count--;
@@ -180,7 +187,7 @@ namespace CMDR.DataSystem
 
         private bool RightIsSequential(int pos)
         {
-            return _data[pos].End == _data[pos + 1].Start + 1;
+            return _slices[pos].End == _slices[pos + 1].Start + 1;
         }
 
         private void SliceCheck(int newSlicePosition)

@@ -77,7 +77,7 @@ namespace CMDR.DataSystem
         {
             Type[] componentTypes = gameObject.Components;
 
-            for (int i = 0; i < componentTypes.Length - 1; i++)
+            for (int i = 0; i < componentTypes.Length; i++)
             {
                 if (_typeToQueryLookup.ContainsKey(componentTypes[i]) == false)
                 {
@@ -86,7 +86,7 @@ namespace CMDR.DataSystem
 
                 Query[] queriesByType = _typeToQueryLookup[componentTypes[i]];
                 
-                for (int j = 0; j < queriesByType.Length - 1; j++)
+                for (int j = 0; j < queriesByType.Length; j++)
                 {
                     if (queriesByType[j].Sort(gameObject))
                     {

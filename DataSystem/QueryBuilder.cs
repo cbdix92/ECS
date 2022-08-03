@@ -37,7 +37,7 @@ namespace CMDR.DataSystem
                 return false;
             }
 
-            components = new Span<T>(_collection.ToArray<T>(), _data[_nextSlice].Start, _data[_nextSlice].End);
+            components = new Span<T>(_collection.ToArray<T>(), _slices[_nextSlice].Start, _slices[_nextSlice].End);
             
             _nextSlice++;
 
