@@ -12,3 +12,13 @@ C:\Users\cbdix\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.csproj.
 C:\Users\cbdix\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\cbdix\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.dll
 C:\Users\cbdix\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.pdb
+C:\Users\Coleton\Desktop\ECS\DataSystem\bin\Debug\netcoreapp3.1\DataSystem.deps.json
+C:\Users\Coleton\Desktop\ECS\DataSystem\bin\Debug\netcoreapp3.1\DataSystem.dll
+C:\Users\Coleton\Desktop\ECS\DataSystem\bin\Debug\netcoreapp3.1\DataSystem.pdb
+C:\Users\Coleton\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.csproj.AssemblyReference.cache
+C:\Users\Coleton\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Coleton\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.AssemblyInfoInputs.cache
+C:\Users\Coleton\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.AssemblyInfo.cs
+C:\Users\Coleton\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.csproj.CoreCompileInputs.cache
+C:\Users\Coleton\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.dll
+C:\Users\Coleton\Desktop\ECS\DataSystem\obj\Debug\netcoreapp3.1\DataSystem.pdb

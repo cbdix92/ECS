@@ -81,6 +81,10 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_METHODS
 
+        /// <summary>
+        /// Adds a new index to the Slice collection.
+        /// </summary>
+        /// <param name="index"> The index to add to the Slice collection. </param>
         protected void Add(int index)
         {
             int pos = FindPosition(index);
@@ -88,7 +92,6 @@ namespace CMDR.DataSystem
             Insert(pos, index);
 
             SliceCheck(pos);
-
         }
 
         private bool BinarySearch(int index, int low, int high)
@@ -115,6 +118,11 @@ namespace CMDR.DataSystem
             }
         }
 
+        /// <summary>
+        /// Combines two Slices together.
+        /// </summary>
+        /// <param name="pos1"> The first Slice. Left or right order does not matter. </param>
+        /// <param name="pos2"> The second Slice. Left or right order does not matter. </param>
         private void Combine(int pos1, int pos2)
         {
             _slices[pos1] = _slices[pos1] + _slices[pos2];
@@ -122,11 +130,15 @@ namespace CMDR.DataSystem
             Remove(pos2);
         }
 
+        /// <summary>
+        /// Checks if an index is contained within this QueryList using BinarySearch. 
+        /// </summary>
+        /// <param name="index"> The index that is to be searched for. </param>
+        /// <returns> Returns True if the index was found, otherwise returns False. </returns>
         private bool Contains(int index)
         {
             return BinarySearch(index, 0, _slices.Length - 1);
         }
-
 
         /// <summary>
         /// Finds the Slice index for a given index.
@@ -135,19 +147,22 @@ namespace CMDR.DataSystem
         /// <returns> A slice index for the ComponentCollection index. </returns>
         private int FindPosition(int index)
         {
-
-            int pos = _count;
-
-            while (index > _slices[pos].Start)
+            for (int i = _count; i > 0; i--)
             {
-                pos--;
+                if (_slices[i].Start >= index)
+                {
+                    return i;
+                }
             }
 
-            pos++;
-
-            return pos;
+            return 0;
         }
 
+        /// <summary>
+        /// Insert a new index into the Slice Collection.
+        /// </summary>
+        /// <param name="pos"> The position to insert the new index at. </param>
+        /// <param name="index"> The index that is to be inserted. </param>
         private void Insert(int pos, int index)
         {
             // Check if storage is at capacity.
@@ -170,14 +185,28 @@ namespace CMDR.DataSystem
             _count++;
         }
 
+        /// <summary>
+        /// Check if the Slice to the left of the current Slice is sequential.
+        /// </summary>
+        /// <param name="pos"> The position of the current Slice. </param>
+        /// <returns> Returns True if the Slice is sequential, otherwise return False. </returns>
         private bool LeftIsSequential(int pos)
         {
+            if (pos == 0)
+            {
+                return false;
+            }
+
             return _slices[pos].Start == _slices[pos - 1].End - 1;
         }
 
-        private void Remove(int indexPosition)
+        /// <summary>
+        /// Removes a Slice from the collection.
+        /// </summary>
+        /// <param name="pos"> The posittion of the Slice that is to be removed. </param>
+        private void Remove(int pos)
         {
-            for (int i = indexPosition; i < _count; i++)
+            for (int i = pos; i < _count; i++)
             {
                 _slices[i] = _slices[i + 1];
             }
@@ -185,11 +214,20 @@ namespace CMDR.DataSystem
             _count--;
         }
 
+        /// <summary>
+        /// Checks if the Slice to the right of the current Slice is sequential.
+        /// </summary>
+        /// <param name="pos"> The position of the current Slice. </param>
+        /// <returns> Returns True if the Slice is sequential, otherwise returns False. </returns>
         private bool RightIsSequential(int pos)
         {
             return _slices[pos].End == _slices[pos + 1].Start + 1;
         }
 
+        /// <summary>
+        /// Checks if a new Slice can be combined with it's neighbor Slices.
+        /// </summary>
+        /// <param name="newSlicePosition"> The index position of the new Slice. </param>
         private void SliceCheck(int newSlicePosition)
         {
             if (RightIsSequential(newSlicePosition))
