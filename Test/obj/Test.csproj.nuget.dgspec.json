@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Coleton\\Desktop\\ECS\\Test\\Test.csproj": {}
+    "C:\\Users\\cbdix\\Desktop\\ECS\\Test\\Test.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Coleton\\Desktop\\ECS\\DataSystem\\DataSystem.csproj": {
+    "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Coleton\\Desktop\\ECS\\DataSystem\\DataSystem.csproj",
+        "projectUniqueName": "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj",
         "projectName": "DataSystem",
-        "projectPath": "C:\\Users\\Coleton\\Desktop\\ECS\\DataSystem\\DataSystem.csproj",
-        "packagesPath": "C:\\Users\\Coleton\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Coleton\\Desktop\\ECS\\DataSystem\\obj\\",
+        "projectPath": "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj",
+        "packagesPath": "C:\\Users\\cbdix\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Coleton\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\cbdix\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -58,24 +58,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Coleton\\Desktop\\ECS\\Test\\Test.csproj": {
+    "C:\\Users\\cbdix\\Desktop\\ECS\\Test\\Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Coleton\\Desktop\\ECS\\Test\\Test.csproj",
+        "projectUniqueName": "C:\\Users\\cbdix\\Desktop\\ECS\\Test\\Test.csproj",
         "projectName": "Test",
-        "projectPath": "C:\\Users\\Coleton\\Desktop\\ECS\\Test\\Test.csproj",
-        "packagesPath": "C:\\Users\\Coleton\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Coleton\\Desktop\\ECS\\Test\\obj\\",
+        "projectPath": "C:\\Users\\cbdix\\Desktop\\ECS\\Test\\Test.csproj",
+        "packagesPath": "C:\\Users\\cbdix\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cbdix\\Desktop\\ECS\\Test\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Coleton\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\cbdix\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -90,8 +90,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "C:\\Users\\Coleton\\Desktop\\ECS\\DataSystem\\DataSystem.csproj": {
-                "projectPath": "C:\\Users\\Coleton\\Desktop\\ECS\\DataSystem\\DataSystem.csproj"
+              "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj": {
+                "projectPath": "C:\\Users\\cbdix\\Desktop\\ECS\\DataSystem\\DataSystem.csproj"
               }
             }
           }
@@ -120,7 +120,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

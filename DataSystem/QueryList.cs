@@ -149,7 +149,7 @@ namespace CMDR.DataSystem
         {
             for (int i = _count; i > 0; i--)
             {
-                if (_slices[i].Start >= index)
+                if (_slices[i].Start <= index)
                 {
                     return i;
                 }
@@ -166,7 +166,7 @@ namespace CMDR.DataSystem
         private void Insert(int pos, int index)
         {
             // Check if storage is at capacity.
-            if(_count == _slices.Length)
+            if(_count == _slices.Length - 1)
             {
                 Array.Resize(ref _slices, _slices.Length + Data.StorageScale);
             }
