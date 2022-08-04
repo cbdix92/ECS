@@ -83,6 +83,13 @@ namespace CMDR.DataSystem
             return max;
         }
 
+        public void Retire(ref ID id)
+        {
+            _availableGameObjectIDs.Enqueue(id.Id);
+
+            id.SetZero();
+        }
+
         #endregion
     }
 }

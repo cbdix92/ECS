@@ -146,11 +146,17 @@ namespace CMDR.DataSystem
             return _idToIndexLookUp.ContainsKey(id) ? _idToIndexLookUp[id] : -1;
         }
 
+        /// <summary>
+        /// Return a pointer starting at the given index.
+        /// </summary>
+        /// <param name="index"> A zero based index for the collection. </param>
+        /// <returns> A pointer starting at the given index. </returns>
+        /// <exception cref="IndexOutOfRangeException"> The index was not  in range of the collection.  </exception>
         public unsafe byte* GetPtrAtIndex(int index)
         {
             if (index * _componentSizeInBytes > _count * _componentSizeInBytes)
             {
-                throw new IndexOutOfRangeException();
+                throw new IndexOutOfRangeException("The index was not  in range of the collection.");
             }
 
 
@@ -171,10 +177,10 @@ namespace CMDR.DataSystem
         {
             TypeCheckHelper(typeof(T));
 
-            Remove<T>(component.ID);
+            Remove(component.ID);
         }
 
-        public void Remove<T>(ID id) where T : struct, IComponent<T>
+        public void Remove(ID id)
         {
             int index = GetIndex(id);
 
@@ -194,11 +200,18 @@ namespace CMDR.DataSystem
                 return;
             }
 
-            // Replace the component with the one at the end of the array. 
+            // Replace the component with the one at the end of the collection. 
+            //unsafe
+            //{
+            //    Unsafe.AsRef<T>(Unsafe.Add<T>(_componentsPtr, index)) = Unsafe.AsRef<T>(Unsafe.Add<T>(_componentsPtr, _count));
+            //}
+
+            // Replace the component with the one at the end of the collection.
             unsafe
             {
-                Unsafe.AsRef<T>(Unsafe.Add<T>(_componentsPtr, index)) = Unsafe.AsRef<T>(Unsafe.Add<T>(_componentsPtr, _count));
+                new Span<byte>(GetPtrAtIndex(index), _componentSizeInBytes)[0] = new Span<byte>(GetPtrAtIndex(_count), _componentSizeInBytes)[0];
             }
+
 
             // Change ID lookup to reflect the changes.
             _idToIndexLookUp[id] = index;

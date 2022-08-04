@@ -28,15 +28,6 @@ namespace CMDR
 
         #endregion
 
-        #region INTERNAL_MEMBERS
-
-        internal void Retire()
-        {
-            _id = 0;
-        }
-
-        #endregion
-
         #region PRIVATE_MEMBERS
 
         private ulong _id;
@@ -128,6 +119,11 @@ namespace CMDR
         internal void InlayID(ulong id)
         {
             _id |= id;
+        }
+
+        internal void SetZero()
+        {
+            _id = 0;
         }
 
         #endregion

@@ -83,56 +83,6 @@ namespace CMDR.DataSystem
 
         #region PRIVATE_METHODS
 
-        // Inlined Add for debug
-        protected void Add_(int index)
-        {
-            // FINDPOSITION()
-            int pos = 0;
-
-            for (int i = _count; i > 0; i--)
-            {
-                if (_slices[i].Start <= index)
-                {
-                    pos = i;
-                    break;
-                }
-            }
-
-
-            //INSERT()
-            // Check if storage is at capacity.
-            if (_count == _slices.Length - 1)
-            {
-                Array.Resize(ref _slices, _slices.Length + Data.StorageScale);
-            }
-
-            // Make room to insert the new index. 
-            if (pos != _count)
-            {
-                for (int i = _count - 1; i >= pos; i--)
-                {
-                    _slices[i + 1] = _slices[i];
-                }
-            }
-
-            _slices[pos] = new Slice(index, index);
-
-            _count++;
-
-
-            // SLICECHECK()
-            if (RightIsSequential(pos))
-            {
-                Combine(pos, pos + 1);
-            }
-
-            if (LeftIsSequential(pos))
-            {
-                Combine(pos - 1, pos);
-            }
-
-        }
-
         /// <summary>
         /// Adds a new index to the Slice collection.
         /// </summary>

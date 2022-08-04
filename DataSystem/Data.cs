@@ -86,14 +86,14 @@ namespace CMDR.DataSystem
             // Remove all components
             foreach(Type t in gameObject.Components)
             {
-                //_components[t].Remove(id);
+                _components[t].Remove(id);
             }
 
             // Remove GameObject
             _gameObjects.Remove(id);
             
-            // Make ID unusable
-            id.Retire();
+            // Make ID unusable and give it back to the IDProvider
+            _idProvider.Retire(ref id);
 
             return true;
         }
