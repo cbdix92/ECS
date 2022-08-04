@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CMDR;
 
 namespace Test
@@ -14,18 +15,20 @@ namespace Test
 
         static Random r = new Random();
 
-        static int size = 3000;
+        static int size = 10000;
 
         static List<ID> ids = new List<ID>(size);
 
         static List<float> initialPos = new List<float>(size);
-        
+
+        static Stopwatch stopwatch = new Stopwatch();
+
+        static long ns = 1000000000 / Stopwatch.Frequency;
         static void Main(string[] args)
         {
+            stopwatch.Start();
 
             Query query = Scene.RegisterQuery<Transform>(MyFilter);
-
-            Transform tOut;
 
             for (int i = 0; i < size; i++)
             {
@@ -35,23 +38,29 @@ namespace Test
                 ids.Add(Scene.Populate(gameObjectBuilder));
             }
 
-            for (int i = 0; i < size; i++)
-            {
-                Scene.GetComponent(ids[i], out tOut);
-                Console.Write($"{initialPos[i]} - ");
-                Console.WriteLine(tOut.Position.X);
-            }
+            stopwatch.Stop();
+
+            Console.WriteLine(stopwatch.ElapsedTicks / ns);
+
+            stopwatch.Reset();
 
             Span<Transform> transforms;
-            
+
+            stopwatch.Start();
+            ID id = ids[0];
+            Scene.DestroyGameObject(ref id);
+
             while(Scene.GetQuery(query, out transforms))
             {
                 for(int i = 0; i < transforms.Length; i++)
                 {
                     Transform t = transforms[i];
-                    Console.WriteLine(t.Position.X);
                 }
             }
+
+            stopwatch.Stop();
+
+            Console.WriteLine(stopwatch.ElapsedTicks / ns);
 
             Console.ReadKey();
         }

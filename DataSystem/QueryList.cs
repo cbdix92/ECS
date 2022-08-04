@@ -249,7 +249,7 @@ namespace CMDR.DataSystem
                 return false;
             }
 
-            return _slices[pos].Start == _slices[pos - 1].End - 1;
+            return _slices[pos].Start - 1 == _slices[pos - 1].End;
         }
 
         /// <summary>
