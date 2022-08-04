@@ -57,7 +57,7 @@ namespace CMDR.DataSystem
             }
 
             // If so, remove it and add newIndex
-            Remove(previousIndex);
+            RemoveIndex(previousIndex, FindPosition(previousIndex));
 
             Add(newIndex);
         }
@@ -73,7 +73,7 @@ namespace CMDR.DataSystem
             // If so, remove it.
             int pos = FindPosition(index);
 
-            Remove(index);
+            RemoveIndex(index, pos);
 
             SliceCheck(pos);
         }
@@ -91,7 +91,7 @@ namespace CMDR.DataSystem
         {
             int pos = FindPosition(index);
 
-            Insert(pos, index);
+            Insert(pos, new Slice(index, index));
 
             SliceCheck(pos);
         }
@@ -161,19 +161,19 @@ namespace CMDR.DataSystem
         }
 
         /// <summary>
-        /// Insert a new index into the Slice Collection.
+        /// Insert a new Slice into the Slice Collection.
         /// </summary>
-        /// <param name="pos"> The position to insert the new index at. </param>
-        /// <param name="index"> The index that is to be inserted. </param>
-        private void Insert(int pos, int index)
+        /// <param name="pos"> The position to insert the new Slice at. </param>
+        /// <param name="index"> The Slice that is to be inserted. </param>
+        private void Insert(int pos, Slice slice)
         {
-            // Check if storage is at capacity.
-            if(_count == _slices.Length - 1)
+            // Check if storage is at capacity
+            if(count == _slices.Length - 1)
             {
                 Array.Resize(ref _slices, _slices.Length + Data.StorageScale);
             }
 
-            // Make room to insert the new index. 
+            // Make room to insert the new slice
             if (pos != _count)
             {
                 for (int i = _count - 1; i >= pos; i--)
@@ -182,7 +182,7 @@ namespace CMDR.DataSystem
                 }
             }
 
-            _slices[pos] = new Slice(index, index);
+            _slices[pos] = slice;
 
             _count++;
         }
@@ -214,6 +214,37 @@ namespace CMDR.DataSystem
             }
 
             _count--;
+        }
+
+        /// <summary>
+        /// Removes an index from a Slice.
+        /// </summary>
+        /// <param name="index"> The index that is to be removed. </param>
+        /// <param name="pos"> The slice position of the index.  </param>
+        private void RemoveIndex(int index, int pos)
+        {
+            int start = _slices[pos].Start;
+
+            int end = _slices[pos].End;
+
+            if (start == index)
+            {
+                _slices[pos].Start++;
+                
+                return;
+            }
+
+            if (end == index)
+            {
+                _slices[pos].End--;
+
+                return;
+            }
+
+            Insert(pos + 1, new Slice(index + 1, end));
+
+            _slices[pos].End = index - 1;
+
         }
 
         /// <summary>
