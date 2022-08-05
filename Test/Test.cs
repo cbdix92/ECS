@@ -15,7 +15,7 @@ namespace Test
 
         static Random r = new Random();
 
-        static int size = 10000;
+        static int size = 100000;
 
         static List<ID> ids = new List<ID>(size);
 
@@ -33,7 +33,7 @@ namespace Test
             for (int i = 0; i < size; i++)
             {
                 initialPos.Add(r.Next(0, 500));
-                transform.Teleport(new Vector3(initialPos[i]));
+                transform.Teleport(new Vector3(1));
                 gameObjectBuilder.Bind(transform);
                 ids.Add(Scene.Populate(gameObjectBuilder));
             }
@@ -42,25 +42,31 @@ namespace Test
 
             Console.WriteLine(stopwatch.ElapsedTicks / ns);
 
-            stopwatch.Reset();
-
             Span<Transform> transforms;
 
-            stopwatch.Start();
             ID id = ids[0];
-            Scene.DestroyGameObject(ref id);
+            //Scene.DestroyGameObject(ref id);
 
-            while(Scene.GetQuery(query, out transforms))
+            float count = 0;
+            for( int j = 0; j < 10; j++)
             {
-                for(int i = 0; i < transforms.Length; i++)
+                stopwatch.Reset();
+                stopwatch.Start();
+
+                while(Scene.GetQuery(query, out transforms))
                 {
-                    Transform t = transforms[i];
+                    for(int i = 0; i < transforms.Length; i++)
+                    {
+                        count += transforms[i].Position.X;
+                    }
                 }
+
+                stopwatch.Stop();
+
+                Console.WriteLine(stopwatch.ElapsedTicks / ns);
             }
 
-            stopwatch.Stop();
-
-            Console.WriteLine(stopwatch.ElapsedTicks / ns);
+            Console.WriteLine(count);
 
             Console.ReadKey();
         }

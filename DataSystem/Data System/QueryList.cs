@@ -6,9 +6,9 @@ namespace CMDR.DataSystem
     {
         protected struct Slice
         {
-            public readonly int Start;
+            public int Start;
 
-            public readonly int End;
+            public int End;
 
             public int Length => Math.Max(End - Start, 1);
 
@@ -168,7 +168,7 @@ namespace CMDR.DataSystem
         private void Insert(int pos, Slice slice)
         {
             // Check if storage is at capacity
-            if(count == _slices.Length - 1)
+            if(_count == _slices.Length - 1)
             {
                 Array.Resize(ref _slices, _slices.Length + Data.StorageScale);
             }
