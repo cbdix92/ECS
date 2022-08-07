@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using CMDR;
 
 namespace Test
@@ -15,7 +16,7 @@ namespace Test
 
         static Random r = new Random();
 
-        static int size = 100000;
+        static int size = 1_000;
 
         static List<ID> ids = new List<ID>(size);
 
@@ -23,9 +24,10 @@ namespace Test
 
         static Stopwatch stopwatch = new Stopwatch();
 
-        static long ns = 1000000000 / Stopwatch.Frequency;
+        static long ns = 1_000_000_000 / Stopwatch.Frequency;
         static void Main(string[] args)
         {
+            Console.WriteLine(Marshal.SizeOf<Transform>());
             stopwatch.Start();
 
             Query query = Scene.RegisterQuery<Transform>(MyFilter);
