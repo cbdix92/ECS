@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
-using CMDR.Components;
 
 
 namespace CMDR.Systems
 {
-	internal static class SpatialIndexer
+	internal class SpatialIndexer
 	{
-		public static int StorageThreshold = 500;
+		public int StorageThreshold = 500;
 
-		public static int StorageStep = 50;
+		public int StorageStep = 50;
 		
-		public static Dictionary<(int, int, int), List<int>> GridCells = new Dictionary<(int, int, int), List<int>>();
+		public Dictionary<(int, int, int), List<int>> GridCells = new Dictionary<(int, int, int), List<int>>();
 		
-		private static int _cellSize = 30;
+		private int _cellSize = 30;
 		
-		public static int CellSize
+		public int CellSize
 		{
 			get => _cellSize;
 			
@@ -41,7 +40,7 @@ namespace CMDR.Systems
 		/// <summary>
 		/// Returns a list of GameObject ID's near the provided collider.
 		/// </summary>
-        internal static int[] GetNearbyColliders(Collider collider)
+        protected private int[] GetNearbyColliders(Collider collider)
         {
 			// HashSet used to prevent GameObject ID duplication
             HashSet<int> hash = new HashSet<int>();
@@ -66,7 +65,7 @@ namespace CMDR.Systems
 			return result;
         }
 		
-		internal static void CalcGridPos(ref Collider collider, Transform transform)
+		protected private void CalcGridPos(ref Collider collider, Transform transform)
 		{
 			if (collider.GridKeys == null)
             {
@@ -127,12 +126,6 @@ namespace CMDR.Systems
                 }
 			}
 		}
-		
-		
-		
-		
-		
-		
 	}
 	
 	

@@ -1,5 +1,5 @@
 ﻿
-namespace CMDR.System
+namespace CMDR.Systems
 {
     public enum ProjectionTypes : int
     {

@@ -1,7 +1,6 @@
 ﻿using System;
-using CMDR.Components;
 
-namespace CMDR.System
+namespace CMDR.Systems
 {
     public static class Camera
     {

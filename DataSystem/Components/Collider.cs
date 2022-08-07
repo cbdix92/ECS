@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using CMDR.Systems;
 
-namespace CMDR.Components
+namespace CMDR
 {
     public struct Collider : IComponent<Collider>
     {
