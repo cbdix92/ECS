@@ -6,17 +6,21 @@ namespace CMDR.Systems
     {
         #region PRIVATE_MEMBERS
 
-        private Query _queryTransform;
+        private Query _queryTransformCollisionPhase;
 
-        private Query _queryCollider;
+        private Query _queryColliderCollisionPhase;
+
+        private Query _queryTransformMoveOnlyPhase;
 
         #endregion
 
         public Physics()
         {
-            _queryTransform = Scene.Active.RegisterQuery<Transform>(Filter);
+            _queryTransformCollisionPhase = Scene.Active.RegisterQuery<Transform>(HasTransformAndCollider);
 
-            _queryCollider = Scene.Active.RegisterQuery<Transform>(Filter);
+            _queryColliderCollisionPhase = Scene.Active.RegisterQuery<Collider>(HasTransformAndCollider);
+
+            _queryTransformMoveOnlyPhase = Scene.Active.RegisterQuery<Transform>(HasOnlyTransform);
         }
 
         #region PUBLIC_METHODS
@@ -25,14 +29,35 @@ namespace CMDR.Systems
         {
             bool cameraMoved = MoveCamera(ticks);
 
-            Scene scene = Scene.Active;
+            //GameObject[] gameObjects = scene.GameObjects.Get();
 
-            GameObject[] gameObjects = scene.GameObjects.Get();
+            //Transform[] transforms = scene.Components.Get<Transform>();
 
-            Transform[] transforms = scene.Components.Get<Transform>();
+            //Collider[] colliders = scene.Components.Get<Collider>();
 
-            Collider[] colliders = scene.Components.Get<Collider>();
+            Span<Transform> transforms;
 
+            Span<Collider> colliders;
+
+            // Move Only Phase
+            while (Scene.Active.GetQuery(_queryTransformMoveOnlyPhase, out transforms))
+            {
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    Move(transforms[i]);
+                }
+            }
+
+            while (Scene.Active.GetQuery(_queryTransformCollisionPhase, out transforms))
+            {
+                for (int i = 0; i < transforms.Length; i++)
+                {
+                    if (Move(transforms[i]) && Scene.Active.GetComponent(transforms[i].ID, out Collider collider))
+                    {
+                        CalcGridPos(ref collider, transforms[i]);
+                    }
+                }
+            }
             // Update all transforms
             foreach (GameObject gameObject in gameObjects)
             {
@@ -126,14 +151,14 @@ namespace CMDR.Systems
             return transform.XVel != 0 || transform.YVel != 0;
         }
 
-        private bool Filter(GameObject gameObject)
+        private bool HasTransformAndCollider(GameObject gameObject)
         {
-            if (gameObject.ContainsComponent<Transform>() && gameObject.ContainsComponent<Collider>())
-            {
-                return true;
-            }
+            return gameObject.ContainsComponent<Transform>() && gameObject.ContainsComponent<Collider>();
+        }
 
-            return false;
+        private bool HasOnlyTransform(GameObject gameObject)
+        {
+            return gameObject.ContainsComponent<Transform>() && !gameObject.ContainsComponent<Collider>();
         }
 
         #endregion
