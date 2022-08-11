@@ -10,7 +10,7 @@ namespace CMDR
 
         public ID ID { get; set; }
 
-		public List<(int X, int Y, int Z)> GridKeys;
+		public List<Vector3> GridKeys;
 
 		public bool Static
 		{
@@ -22,13 +22,13 @@ namespace CMDR
 			}
 		}
 		
-		public float ScaleX
+		public float SizeX
 		{
-			get => _scale.X;
+			get => _size.X;
 			
 			set
 			{
-				_scale.X = value;
+				_size.X = value;
 
 				if(value > SpatialIndexer.CellSize && !_static)
                 {
@@ -37,13 +37,13 @@ namespace CMDR
 			}
 		}
 		
-		public float ScaleY
+		public float SizeY
 		{
-			get => _scale.Y;
+			get => _size.Y;
 			
 			set
 			{
-				_scale.Y = value;
+				_size.Y = value;
 
 				if(value > SpatialIndexer.CellSize)
                 {
@@ -52,13 +52,13 @@ namespace CMDR
 			}
 		}
 		
-		public float ScaleZ
+		public float SizeZ
 		{
-			get => _scale.Z;
+			get => _size.Z;
 
 			set
 			{
-				_scale.Z = value;
+				_size.Z = value;
 
 				if(value > SpatialIndexer.CellSize)
                 {
@@ -67,7 +67,7 @@ namespace CMDR
 			}
 		}
 
-		public Vector3 Scale => _scale;
+		public Vector3 Size => _size;
 
 		#endregion
 
@@ -75,7 +75,7 @@ namespace CMDR
 
 		private bool _static;
 
-		private Vector3 _scale;
+		private Vector3 _size;
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace CMDR
 
         public void SetBounds(Vector3 scale)
         {
-			(ScaleX, ScaleY, ScaleZ) = (scale.X, scale.Y, scale.Z);
+			(SizeX, SizeY, SizeZ) = (scale.X, scale.Y, scale.Z);
         }
 
         #endregion

@@ -68,6 +68,11 @@ namespace CMDR
             return result.Magnitude();
         }
 
+        public static Vector3 Floor(Vector3 vector)
+        {
+            return new Vector3(MathF.Floor(vector.X), MathF.Floor(vector.Y), MathF.Floor(vector.Z));
+        }
+
         public bool Equals(Vector3 other) => (X == other.X && Y == other.Y && Z == other.Z);
 
         public float[] ToArray() => new float[] { X, Y, Z };

@@ -89,12 +89,12 @@ namespace CMDR.Systems
                             
                             // Bounding box check
                             bool rectCol = 
-                                   transform.X <= transform2.X + collider2.ScaleX
-                                && transform.X + collider.ScaleX >= transform2.X
-                                && transform.Y <= transform2.Y + collider2.ScaleY
-                                && transform.Y + collider.ScaleY >= transform2.Y
-                                && transform.Z <= transform2.Z + collider2.ScaleZ
-                                && transform.Z + collider.ScaleZ >= transform2.Z;
+                                   transform.X <= transform2.X + collider2.SizeX
+                                && transform.X + collider.SizeX >= transform2.X
+                                && transform.Y <= transform2.Y + collider2.SizeY
+                                && transform.Y + collider.SizeY >= transform2.Y
+                                && transform.Z <= transform2.Z + collider2.SizeZ
+                                && transform.Z + collider.SizeZ >= transform2.Z;
 
 
                             // Compare bounding box checks and then bit collider check

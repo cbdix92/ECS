@@ -37,6 +37,8 @@ namespace CMDR
 
         public void Normalize() => this /= Magnitude();
 
+        public Vector2 Floor(Vector2 vector) => new Vector2(MathF.Floor(vector.X), MathF.Floor(vector.Y));
+
         public bool Equals(Vector2 other) => (X == other.X && Y == other.Y);
 		
 		public float[] ToArray() => new float[] { X, Y};

@@ -78,6 +78,11 @@ namespace CMDR
             return result.Magnitude();
         }
 
+        public static Vector4 Floor(Vector4 vector)
+        {
+            return new Vector4(MathF.Floor(vector.X), MathF.Floor(vector.Y), MathF.Floor(vector.Z), MathF.Floor(vector.W));
+        }
+
         public float[] ToArray()
         {
             return new float[] { X, Y, Z, W };
