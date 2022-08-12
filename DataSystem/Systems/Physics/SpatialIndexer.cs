@@ -10,7 +10,7 @@ namespace CMDR.Systems
 
 		public readonly Dictionary<Vector3, List<ID>> GridCells;
 
-		public int CellSize => _cellSize;
+		public float CellSize => _cellSize;
 
 		#endregion
 

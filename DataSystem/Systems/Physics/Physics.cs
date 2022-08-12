@@ -6,19 +6,19 @@ namespace CMDR.Systems
     {
         #region PRIVATE_MEMBERS
 
-        private Query _queryTransformCollisionPhase;
+        private readonly Scene _scene;
 
-        private Query _queryColliderCollisionPhase;
+        private readonly Query _queryTransformCollisionPhase;
 
-        private Query _queryTransformMoveOnlyPhase;
+        private readonly Query _queryTransformMoveOnlyPhase;
 
         #endregion
 
-        public Physics()
+        public Physics(Scene scene)
         {
-            _queryTransformCollisionPhase = Scene.Active.RegisterQuery<Transform>(HasTransformAndCollider);
+            _scene = scene;
 
-            _queryColliderCollisionPhase = Scene.Active.RegisterQuery<Collider>(HasTransformAndCollider);
+            _queryTransformCollisionPhase = Scene.Active.RegisterQuery<Transform>(HasTransformAndCollider);
 
             _queryTransformMoveOnlyPhase = Scene.Active.RegisterQuery<Transform>(HasOnlyTransform);
         }
@@ -52,9 +52,33 @@ namespace CMDR.Systems
             {
                 for (int i = 0; i < transforms.Length; i++)
                 {
-                    if (Move(transforms[i]) && Scene.Active.GetComponent(transforms[i].ID, out Collider collider))
+                    if (Move(transforms[i]) && _scene.GetComponent(transforms[i].ID, out Collider collider))
                     {
-                        CalcGridPos(ref collider, transforms[i]);
+                        CalculateGridPos(ref collider, transforms[i]);
+
+                        ID[] nearby = GetNearby(ref collider);
+
+                        if (nearby.Length == 0)
+                        {
+                            continue;
+                        }
+
+                        //Start Broad Phase
+                        BoundingBox bb = new BoundingBox(transforms[i].Position, collider.Size);
+
+                        for (int j = 0; j < nearby.Length; j++)
+                        {
+                            _scene.GetComponent(nearby[j], out Collider otherCollider);
+                            
+                            _scene.GetComponent(nearby[j], out Transform otherTransform);
+                            
+                            BoundingBox other = new BoundingBox(otherTransform.Position, otherCollider.Size);
+
+                            if (bb.BouningBoxCollisionTest(other))
+                            {
+                                // Start Narrow Phase
+                            }
+                        }
                     }
                 }
             }
