@@ -14,7 +14,7 @@ namespace CMDR.Systems
 
         #endregion
 
-        public Physics(Scene scene)
+        public Physics(Scene scene) : base()
         {
             _scene = scene;
 
@@ -29,12 +29,6 @@ namespace CMDR.Systems
         {
             bool cameraMoved = MoveCamera(ticks);
 
-            //GameObject[] gameObjects = scene.GameObjects.Get();
-
-            //Transform[] transforms = scene.Components.Get<Transform>();
-
-            //Collider[] colliders = scene.Components.Get<Collider>();
-
             Span<Transform> transforms;
 
             Span<Collider> colliders;
@@ -48,6 +42,7 @@ namespace CMDR.Systems
                 }
             }
 
+            // Move and Collision Phase
             while (Scene.Active.GetQuery(_queryTransformCollisionPhase, out transforms))
             {
                 for (int i = 0; i < transforms.Length; i++)
@@ -81,68 +76,6 @@ namespace CMDR.Systems
                         }
                     }
                 }
-            }
-            // Update all transforms
-            foreach (GameObject gameObject in gameObjects)
-            {
-                int transformID = gameObject.Get<Transform>();
-                
-                int colliderID = gameObject.Get<Collider>();
-
-                #region COLLISION_LOGIC
-
-                int result = Convert.ToByte(transformID != -1) | (Convert.ToByte(colliderID != -1) << 1) | (Convert.ToByte(Move(transforms[transformID])) << 2);
-
-                switch (result)
-                {
-                    case 7:
-
-                        Transform transform = transforms[gameObject.Get<Transform>()];
-
-                        Collider collider = colliders[gameObject.Get<Collider>()];
-
-                        CalcGridPos(ref collider, transform);
-                        
-                        int[] gameObjectColliders = GetNearbyColliders(collider);
-
-                        foreach (int i in gameObjectColliders)
-                        {
-                            Transform transform2 = transforms[gameObjects[i].Get<Transform>()];
-
-                            Collider collider2 = colliders[gameObjects[i].Get<Collider>()];
-                            
-                            // Bounding box check
-                            bool rectCol = 
-                                   transform.X <= transform2.X + collider2.SizeX
-                                && transform.X + collider.SizeX >= transform2.X
-                                && transform.Y <= transform2.Y + collider2.SizeY
-                                && transform.Y + collider.SizeY >= transform2.Y
-                                && transform.Z <= transform2.Z + collider2.SizeZ
-                                && transform.Z + collider.SizeZ >= transform2.Z;
-
-
-                            // Compare bounding box checks and then bit collider check
-                            if (rectCol && BitCollider.BitColliderCheck(transform, transform2, collider, collider2))
-                            {
-                                continue; // Resolve collision here ...
-                            }
-                        }
-
-                        continue;
-
-                    case 3:
-                        // Nothing needs to be done. Restart the loop
-                        if (colliders[colliderID].GridKeys == null )
-                        {
-                            CalcGridPos(ref colliders[colliderID], transforms[transformID]);
-                        }
-                        continue;
-                    
-                    default:
-                        continue;
-                }
-                #endregion
-
             }
         }
 

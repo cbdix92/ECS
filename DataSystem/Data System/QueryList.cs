@@ -65,7 +65,7 @@ namespace CMDR.DataSystem
         public void OnComponentDestroyed(int index)
         {
             // Check if this QueryList contains index
-            if(Contains(index) == false)
+            if (Contains(index) == false)
             {
                 return;
             }

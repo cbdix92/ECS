@@ -41,6 +41,8 @@ namespace CMDR.DataSystem
 
         private readonly Dictionary<ID, int> _idToIndexLookUp;
 
+        private readonly Dictionary<int, ID> _indexToIDLookup;
+
         /// <summary>
         /// Used for radix sorting.
         /// </summary>
@@ -57,6 +59,8 @@ namespace CMDR.DataSystem
             _capacity = Data.StorageScale * _componentSizeInBytes;
 
             _idToIndexLookUp = new Dictionary<ID, int>();
+
+            _indexToIDLookup = new Dictionary<int, ID>();
 
             unsafe
             {
@@ -91,24 +95,11 @@ namespace CMDR.DataSystem
             _count++;
 
             _idToIndexLookUp.Add(component.ID, _count - 1);
-        }
 
-        public void AddRange<T>(T[] components) where T : struct, IComponent<T>
-        {
-            for (int i = 0; i < components.Length - 1; i++)
-            {
-                Add<T>(components[i]);
-            }
+            _indexToIDLookup.Add(_count - 1, component.ID);
         }
 
         public bool Contains(ID id) => _idToIndexLookUp.ContainsKey(id);
-
-        public bool Contains<T>(T component) where T : struct, IComponent<T>
-        {
-            TypeCheckHelper(typeof(T));
-
-            return Contains(component.ID);
-        }
 
         public ref T GetRef<T>(ID id) where T : struct, IComponent<T>
         {
@@ -129,16 +120,10 @@ namespace CMDR.DataSystem
             unsafe
             {
                 Span<T> _ = new Span<T>(_componentsPtr, _count);
+
                 return _[index];
             }
 
-        }
-
-        public int GetIndex<T>(T component) where T : struct, IComponent<T>
-        {
-            TypeCheckHelper(typeof(T));
-
-            return GetIndex(component.ID);
         }
 
         public int GetIndex(ID id)
@@ -173,13 +158,6 @@ namespace CMDR.DataSystem
             }
         }
 
-        public void Remove<T>(T component) where T : struct, IComponent<T>
-        {
-            TypeCheckHelper(typeof(T));
-
-            Remove(component.ID);
-        }
-
         public void Remove(ID id)
         {
             int index = GetIndex(id);
@@ -209,12 +187,23 @@ namespace CMDR.DataSystem
             // Replace the component with the one at the end of the collection.
             unsafe
             {
-                new Span<byte>(GetPtrAtIndex(index), _componentSizeInBytes)[0] = new Span<byte>(GetPtrAtIndex(_count), _componentSizeInBytes)[0];
+                //new Span<byte>(GetPtrAtIndex(index), _componentSizeInBytes)[0] = new Span<byte>(GetPtrAtIndex(_count), _componentSizeInBytes)[0];
+                Span<byte> oldComp = new Span<byte>(GetPtrAtIndex(index), _componentSizeInBytes);
+                
+                Span<byte> newComp = new Span<byte>(GetPtrAtIndex(_count), _componentSizeInBytes);
+                
+                for (int i = 0; i < oldComp.Length; i++)
+                {
+                    newComp[i] = oldComp[i];
+                }
             }
 
-
             // Change ID lookup to reflect the changes.
-            _idToIndexLookUp[id] = index;
+            _idToIndexLookUp[_indexToIDLookup[_count]] = index;
+            
+            _indexToIDLookup[index] = _indexToIDLookup[_count];
+            
+            _indexToIDLookup.Remove(index);
 
             ComponentDestroyedEvent?.Invoke(index);
 

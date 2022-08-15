@@ -11,6 +11,8 @@ namespace Test
         static Scene Scene = new Scene();
         
         static GameObjectBuilder gameObjectBuilder = new GameObjectBuilder();
+
+        static GameObjectBuilder gameObjectBuilder2 = new GameObjectBuilder();
         
         static Transform transform = new Transform();
 
@@ -18,16 +20,15 @@ namespace Test
 
         static int size = 1_000;
 
-        static List<ID> ids = new List<ID>(size);
+        static List<ID> ids = new List<ID>(size + 1);
 
-        static List<float> initialPos = new List<float>(size);
+        static List<float> initialPos = new List<float>(size + 1);
 
         static Stopwatch stopwatch = new Stopwatch();
 
         static long ns = 1_000_000_000 / Stopwatch.Frequency;
         static void Main(string[] args)
         {
-            Console.WriteLine(Marshal.SizeOf<Transform>());
             stopwatch.Start();
 
             Query query = Scene.RegisterQuery<Transform>(MyFilter);
@@ -35,7 +36,16 @@ namespace Test
             for (int i = 0; i < size; i++)
             {
                 initialPos.Add(r.Next(0, 500));
-                transform.Teleport(new Vector3(1));
+
+                if (i % 2 == 0)
+                {
+                    gameObjectBuilder2.Bind(transform);
+                    gameObjectBuilder2.Bind(new Collider());
+                    ids.Add(Scene.Populate(gameObjectBuilder2));
+                    continue;
+                }
+
+                transform.Teleport(new Vector3(initialPos[i]));
                 gameObjectBuilder.Bind(transform);
                 ids.Add(Scene.Populate(gameObjectBuilder));
             }
@@ -46,11 +56,11 @@ namespace Test
 
             Span<Transform> transforms;
 
-            ID id = ids[0];
-            //Scene.DestroyGameObject(ref id);
+            ID id = ids[size / 2];
+            Scene.DestroyGameObject(ref id);
 
             float count = 0;
-            for( int j = 0; j < 10; j++)
+            for( int j = 0; j < 1; j++)
             {
                 stopwatch.Reset();
                 stopwatch.Start();
@@ -59,23 +69,23 @@ namespace Test
                 {
                     for(int i = 0; i < transforms.Length; i++)
                     {
+                        Scene.GetGameObject(transforms[i].ID, out GameObject gameObject);
+                        Console.WriteLine(gameObject.ContainsComponent<Collider>());
                         count += transforms[i].Position.X;
                     }
                 }
 
                 stopwatch.Stop();
 
-                Console.WriteLine(stopwatch.ElapsedTicks / ns);
+                Console.WriteLine($"System Loop Time ns:{stopwatch.ElapsedTicks / ns}");
             }
-
-            Console.WriteLine(count);
 
             Console.ReadKey();
         }
 
         private static bool MyFilter(GameObject gameObject)
         {
-            if (gameObject.ContainsComponent<Transform>())
+            if (gameObject.ContainsComponent<Transform>() && gameObject.ContainsComponent<Collider>() == false)
                 return true;
             return false;
         }

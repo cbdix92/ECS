@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using CMDR.Systems;
 
 namespace CMDR
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct Collider : IComponent<Collider>
     {
         #region PUBLIC_MEMBERS
 
         public ID ID { get; set; }
 
-		public List<Vector3> GridKeys;
+		//public List<Vector3> GridKeys;
 
 		public bool Static
 		{
@@ -29,11 +31,6 @@ namespace CMDR
 			set
 			{
 				_size.X = value;
-
-				if(value > SpatialIndexer.CellSize && !_static)
-                {
-					SpatialIndexer.CellSize = (int)value;
-                }
 			}
 		}
 		
@@ -44,11 +41,6 @@ namespace CMDR
 			set
 			{
 				_size.Y = value;
-
-				if(value > SpatialIndexer.CellSize)
-                {
-					SpatialIndexer.CellSize = (int)value;
-                }
 			}
 		}
 		
@@ -59,11 +51,6 @@ namespace CMDR
 			set
 			{
 				_size.Z = value;
-
-				if(value > SpatialIndexer.CellSize)
-                {
-					SpatialIndexer.CellSize = (int)value;
-                }
 			}
 		}
 

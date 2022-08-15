@@ -19,8 +19,11 @@ namespace CMDR
         public GameObject(Scene scene, ID id, Type[] components)
         {
             Scene = scene;
+
             ID = id;
+            
             ComponentCount = components.Length;
+            
             Components = components;
         }
 
@@ -31,14 +34,16 @@ namespace CMDR
         public bool ContainsComponent(Type type)
         {
             foreach (Type t in Components)
+            {
                 if (t == type)
+                {
                     return true;
+                }
+
+            }
+
             return false;
         }
-
-        #endregion
-
-        #region  PRIVATE_METHODS
 
         #endregion
     }
