@@ -11,6 +11,21 @@ namespace CMDR.DataSystem
 
     internal sealed class ComponentCollection
     {
+        #region EXCEPTIONS
+
+        public class IncorrectTypeArgumentForCollection : Exception
+        {
+            public IncorrectTypeArgumentForCollection() { }
+
+            public IncorrectTypeArgumentForCollection(string message) : base(message) { }
+
+            public IncorrectTypeArgumentForCollection(string message, Exception inner) : base(message, inner) { }
+
+            public IncorrectTypeArgumentForCollection(Type expectedType, Type providedType) : base($"Incorrect type argument! Expected {expectedType.Name} but received {providedType.Name}.") { }
+        }
+
+        #endregion
+
         #region PUBLIC_MEMBERS
 
         public unsafe byte* Ptr => _componentsPtr;
@@ -141,7 +156,7 @@ namespace CMDR.DataSystem
         {
             if (index * _componentSizeInBytes > _count * _componentSizeInBytes)
             {
-                throw new IndexOutOfRangeException("The index was not  in range of the collection.");
+                throw new IndexOutOfRangeException("The index was not in range of the collection.");
             }
 
 
@@ -188,6 +203,7 @@ namespace CMDR.DataSystem
             unsafe
             {
                 //new Span<byte>(GetPtrAtIndex(index), _componentSizeInBytes)[0] = new Span<byte>(GetPtrAtIndex(_count), _componentSizeInBytes)[0];
+                
                 Span<byte> oldComp = new Span<byte>(GetPtrAtIndex(index), _componentSizeInBytes);
                 
                 Span<byte> newComp = new Span<byte>(GetPtrAtIndex(_count), _componentSizeInBytes);
@@ -291,7 +307,7 @@ namespace CMDR.DataSystem
             // Prefix Sum
             for (int i = 0; i < 15; i++)
             {
-                count[i + 1] += count[1];
+                count[i + 1] += count[i];
             }
 
             // Build Output
@@ -310,6 +326,11 @@ namespace CMDR.DataSystem
             return InternalSortComponents(max, pos + 4, mask << 4, output, input);
         }
 
+        /// <summary>
+        /// Validates the given Component type for this collection.
+        /// </summary>
+        /// <param name="received"> The provided Component type. </param>
+        /// <exception cref="IncorrectTypeArgumentForCollection"> The provided Component type is incorrect for this collection. </exception>
         private void TypeCheckHelper(Type received)
         {
             if (received != ComponentType)
@@ -319,16 +340,5 @@ namespace CMDR.DataSystem
         }
 
         #endregion
-    }
-
-    public class IncorrectTypeArgumentForCollection : Exception
-    {
-        public IncorrectTypeArgumentForCollection() { }
-
-        public IncorrectTypeArgumentForCollection(string message) : base(message) { }
-
-        public IncorrectTypeArgumentForCollection(string message, Exception inner) : base(message, inner) { }
-
-        public IncorrectTypeArgumentForCollection(Type expectedType, Type providedType) : base($"Incorrect type argument! Expected {expectedType.Name} but received {providedType.Name}.") { }
     }
 }

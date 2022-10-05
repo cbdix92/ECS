@@ -77,7 +77,7 @@ namespace Test
 
                 stopwatch.Stop();
 
-                Console.WriteLine($"System Loop Time ns:{stopwatch.ElapsedTicks / ns}");
+                Console.WriteLine($"System Loop Time ns:{stopwatch.ElapsedTicks * ns}");
             }
 
             Console.ReadKey();
