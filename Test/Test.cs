@@ -8,6 +8,12 @@ namespace Test
 {
     class Test
     {
+        static Random r = new Random();
+        
+        static List<ID> ids = new List<ID>();
+
+        static Stopwatch stopwatch = new Stopwatch();
+        
         static Scene Scene = new Scene();
         
         static GameObjectBuilder gameObjectBuilder = new GameObjectBuilder();
@@ -16,78 +22,59 @@ namespace Test
         
         static Transform transform = new Transform();
 
-        static Random r = new Random();
-
-        static int size = 1_000;
-
-        static List<ID> ids = new List<ID>(size + 1);
-
-        static List<float> initialPos = new List<float>(size + 1);
-
-        static Stopwatch stopwatch = new Stopwatch();
+        static Collider collider = new Collider();
 
         static long ns = 1_000_000_000 / Stopwatch.Frequency;
         static void Main(string[] args)
         {
-            stopwatch.Start();
-
             Query query = Scene.RegisterQuery<Transform>(MyFilter);
 
-            for (int i = 0; i < size; i++)
+            stopwatch.Start();
+
+            for (int i = 0; i < 2; i++)
             {
-                initialPos.Add(r.Next(0, 500));
-
-                if (i % 2 == 0)
-                {
-                    gameObjectBuilder2.Bind(transform);
-                    gameObjectBuilder2.Bind(new Collider());
-                    ids.Add(Scene.Populate(gameObjectBuilder2));
-                    continue;
-                }
-
-                transform.Teleport(new Vector3(initialPos[i]));
+                transform.Teleport(new Vector3(r.Next(0, 100)));
                 gameObjectBuilder.Bind(transform);
+
+                if (i == 1)
+                    gameObjectBuilder.Bind(collider);
+
                 ids.Add(Scene.Populate(gameObjectBuilder));
             }
 
             stopwatch.Stop();
 
-            Console.WriteLine(stopwatch.ElapsedTicks / ns);
+            Console.WriteLine(stopwatch.ElapsedTicks * ns);
 
-            Span<Transform> transforms;
+            Span<Transform> transformQuery;
 
-            ID id = ids[size / 2];
-            Scene.DestroyGameObject(ref id);
+            ID id = ids[1];
 
-            float count = 0;
-            for( int j = 0; j < 1; j++)
+            //Scene.DestroyGameObject(ref id);
+           
+            stopwatch.Reset();
+
+            stopwatch.Start();
+
+            while(Scene.GetQuery(query, out transformQuery))
             {
-                stopwatch.Reset();
-                stopwatch.Start();
-
-                while(Scene.GetQuery(query, out transforms))
+                for(int i = 0; i < transformQuery.Length; i++)
                 {
-                    for(int i = 0; i < transforms.Length; i++)
-                    {
-                        Scene.GetGameObject(transforms[i].ID, out GameObject gameObject);
-                        Console.WriteLine(gameObject.ContainsComponent<Collider>());
-                        count += transforms[i].Position.X;
-                    }
+                    Scene.GetGameObject(transformQuery[i].ID, out GameObject gameObject);
+                    Console.WriteLine(gameObject.ContainsComponent<Collider>());
                 }
-
-                stopwatch.Stop();
-
-                Console.WriteLine($"System Loop Time ns:{stopwatch.ElapsedTicks * ns}");
             }
+
+            stopwatch.Stop();
+
+            Console.WriteLine($"System Loop Time ns:{stopwatch.ElapsedTicks * ns}");
 
             Console.ReadKey();
         }
 
         private static bool MyFilter(GameObject gameObject)
         {
-            if (gameObject.ContainsComponent<Transform>() && gameObject.ContainsComponent<Collider>() == false)
-                return true;
-            return false;
+            return gameObject.ContainsComponent<Transform>() && gameObject.ContainsComponent<Collider>() == false;
         }
     }
 }

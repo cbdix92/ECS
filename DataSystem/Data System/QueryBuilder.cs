@@ -30,7 +30,7 @@ namespace CMDR.DataSystem
         /// <returns> Returns True if there are more slices, otherwise returns false. </returns>
         public bool GetQuery<T>(out Span<T> components) where T : struct, IComponent<T>
         {
-            if (_nextSlice == SliceCount)
+            if (_nextSlice == SliceCount + 1)
             {
                 components = default;
                 _nextSlice = 0;
