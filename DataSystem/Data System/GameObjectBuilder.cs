@@ -111,6 +111,18 @@ namespace CMDR
         }
 
         /// <summary>
+        /// Unbinds all current components from this ComponentBuilder.
+        /// </summary>
+        public void UnbindAll()
+        {
+            // Reset _types and _components so it can be rebuilt by the ComponentTypes and Components properties.
+            _types = null;
+            _components = null;
+
+            _children.Clear();
+        }
+
+        /// <summary>
         /// Unbind a Component from this GameObjectBuilder.
         /// </summary>
         /// <typeparam name="T"> Type of IComponent that will be unbound. </typeparam>
@@ -131,15 +143,6 @@ namespace CMDR
             {
                 _children.Remove(tComp);
             }
-        }
-
-        public void RemoveAll()
-        {
-            // Reset _types annd _components so it can be rebuilt by the ComponentTypes and Components properties.
-            _types = null;
-            _components = null;
-
-            _children.Clear();
         }
 
         #endregion

@@ -31,13 +31,17 @@ namespace Test
 
             stopwatch.Start();
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 10; i++)
             {
                 transform.Teleport(new Vector3(r.Next(0, 100)));
                 gameObjectBuilder.Bind(transform);
 
-                if (i == 1)
-                    gameObjectBuilder.Bind(collider);
+                //if (i == 1)
+                //{
+                //    gameObjectBuilder.Bind(collider);
+                //    ids.Add(Scene.Populate(gameObjectBuilder));
+                //    gameObjectBuilder.UnbindAll();
+                //}
 
                 ids.Add(Scene.Populate(gameObjectBuilder));
             }
@@ -49,25 +53,29 @@ namespace Test
             Span<Transform> transformQuery;
 
             ID id = ids[1];
+            ID id2 = ids[2];
+            Scene.DestroyGameObject(ref id);
+            Scene.DestroyGameObject(ref id2);
 
-            //Scene.DestroyGameObject(ref id);
-           
             stopwatch.Reset();
 
             stopwatch.Start();
 
+            int loopCounter = 1;
             while(Scene.GetQuery(query, out transformQuery))
             {
                 for(int i = 0; i < transformQuery.Length; i++)
                 {
                     Scene.GetGameObject(transformQuery[i].ID, out GameObject gameObject);
-                    Console.WriteLine(gameObject.ContainsComponent<Collider>());
+                    Console.WriteLine($"{loopCounter++} {gameObject.ContainsComponent<Collider>()}");
                 }
             }
 
             stopwatch.Stop();
-
+            var time = stopwatch.ElapsedTicks * ns;
+            var perSecond = 1000000000 / time;
             Console.WriteLine($"System Loop Time ns:{stopwatch.ElapsedTicks * ns}");
+            Console.WriteLine($"perSecond: {perSecond}");
 
             Console.ReadKey();
         }

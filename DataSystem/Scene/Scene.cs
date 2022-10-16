@@ -15,8 +15,6 @@ namespace CMDR
 
         public Scene() : base()
         {
-            //Data = new Data();
-
             if (Active == null)
             {
                 Active = this;

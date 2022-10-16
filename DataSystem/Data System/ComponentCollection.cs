@@ -173,6 +173,10 @@ namespace CMDR.DataSystem
             }
         }
 
+        /// <summary>
+        /// Removes a component from this collection.
+        /// </summary>
+        /// <param name="id"> The ID of the compoent that is to be removed. </param>
         public void Remove(ID id)
         {
             int index = GetIndex(id);
