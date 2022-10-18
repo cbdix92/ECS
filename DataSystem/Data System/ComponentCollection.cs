@@ -225,9 +225,13 @@ namespace CMDR.DataSystem
             
             _indexToIDLookup.Remove(index);
 
-            ComponentDestroyedEvent?.Invoke(index);
+            ComponentDestroyedEvent(index);
 
-            ComponentMovedEvent?.Invoke(_count, index);
+            ComponentMovedEvent(_count - 1, index);
+
+            //ComponentDestroyedEvent?.Invoke(index);
+
+            //ComponentMovedEvent?.Invoke(_count, index);
         }
 
         /// <summary>

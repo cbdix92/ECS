@@ -57,7 +57,7 @@ namespace CMDR.DataSystem
             }
 
             // If so, remove it and add newIndex
-            RemoveIndex(previousIndex, FindPosition(previousIndex));
+            RemoveIndex(previousIndex);
 
             Add(newIndex);
         }
@@ -73,7 +73,7 @@ namespace CMDR.DataSystem
             // If so, remove it.
             int pos = FindPosition(index);
 
-            RemoveIndex(index, pos);
+            RemoveIndex(index);
 
             SliceCheck(pos);
         }
@@ -220,9 +220,10 @@ namespace CMDR.DataSystem
         /// Removes an index from a Slice.
         /// </summary>
         /// <param name="index"> The index that is to be removed. </param>
-        /// <param name="pos"> The slice position containing the index.  </param>
-        private void RemoveIndex(int index, int pos)
+        private void RemoveIndex(int index)
         {
+            int pos = FindPosition(index);
+
             int start = _slices[pos].Start;
 
             int end = _slices[pos].End;

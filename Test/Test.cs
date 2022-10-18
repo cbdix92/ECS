@@ -54,6 +54,10 @@ namespace Test
 
             ID id = ids[1];
             ID id2 = ids[2];
+
+            Console.WriteLine(id);
+            Console.WriteLine(id2);
+
             Scene.DestroyGameObject(ref id);
             Scene.DestroyGameObject(ref id2);
 
@@ -61,13 +65,13 @@ namespace Test
 
             stopwatch.Start();
 
-            int loopCounter = 1;
             while(Scene.GetQuery(query, out transformQuery))
             {
                 for(int i = 0; i < transformQuery.Length; i++)
                 {
-                    Scene.GetGameObject(transformQuery[i].ID, out GameObject gameObject);
-                    Console.WriteLine($"{loopCounter++} {gameObject.ContainsComponent<Collider>()}");
+                    Console.WriteLine(transformQuery[i].ID);
+                    //Scene.GetGameObject(transformQuery[i].ID, out GameObject gameObject);
+                    //Console.WriteLine($"{loopCounter++} {gameObject.ContainsComponent<Collider>()}");
                 }
             }
 
