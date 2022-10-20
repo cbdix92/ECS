@@ -46,8 +46,10 @@ namespace CMDR.Systems
 
 		public static void AddKeyBind(Key key, KeyPressCallback keyPressCallback)
 		{
-			if (!_keyBinds.ContainsKey(key))
+			if (_keyBinds.ContainsKey(key) == false)
+			{
 				_keyBinds.Add(key, new List<KeyPressCallback>());
+			}
 			
 			_keyBinds[key].Add(keyPressCallback);
 
