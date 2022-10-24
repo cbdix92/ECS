@@ -7,8 +7,11 @@ namespace CMDR.Native
     internal struct RAWINPUTHEADER
     {
         uint dwType;
+
         uint dwSize;
+
         IntPtr hDevice;
+
         IntPtr wParam;
     }
 }
