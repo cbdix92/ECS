@@ -136,13 +136,34 @@ namespace CMDR.Native
 			GL.Build();
 		}
 
+		public static void RegisterHID()
+        {
+			if(CurrentWindow.HWND == IntPtr.Zero)
+            {
+				CheckError("HWND is null", true);
+            }
+
+			RAWINPUTDEVICE keyboard = new RAWINPUTDEVICE(HID_USAGE_PAGE.GENERIC, HID_USAGE_GENERIC.KEYBOARD, RIDEV.NOLEGACY, CurrentWindow.HWND);
+			
+			RAWINPUTDEVICE mouse = new RAWINPUTDEVICE(HID_USAGE_PAGE.GENERIC, HID_USAGE_GENERIC.MOUSE, RIDEV.NOLEGACY, CurrentWindow.HWND);
+
+			RAWINPUTDEVICE[] HIDs = new RAWINPUTDEVICE[] { keyboard, mouse };
+
+			RegisterRawInputDevices(HIDs, 2, (uint)Marshal.SizeOf<RAWINPUTDEVICE>());			
+        }
+
 		public static IntPtr WindowProcedure(IntPtr hWnd, uint uMsg, IntPtr wParam, IntPtr lParam)
 		{
 			switch((WM)uMsg)
             {
 				case WM.CREATE:
+					RegisterHID();
 					PrepareContext(CurrentWindow);
 					ShowWindow(CurrentWindow.HWND, (int)SW.SHOW);
+					return IntPtr.Zero;
+
+				case WM.INPUT:
+
 					return IntPtr.Zero;
 
 				case WM.QUIT:

@@ -10,5 +10,16 @@ namespace CMDR.Native
         ushort usUsage;
         uint dwFlags;
         IntPtr hwndTarget;
+
+        public RAWINPUTDEVICE(HID_USAGE_PAGE page, HID_USAGE_GENERIC usage, RIDEV flags, IntPtr hwnd)
+        {
+            usUsagePage = (ushort)page;
+
+            usUsage = (ushort)usage;
+
+            dwFlags = (uint)flags;
+
+            hwndTarget = hwnd;
+        }
     }
 }

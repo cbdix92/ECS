@@ -6,6 +6,7 @@ namespace CMDR.Native
     /// For RAWINPUTDEVICE DWORD field
     /// https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-rawinputdevice
     /// </summary>
+    [Flags]
     internal enum RIDEV : uint
     {
         /// <summary>
